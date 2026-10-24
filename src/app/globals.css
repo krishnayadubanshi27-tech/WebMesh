@@ -1,0 +1,329 @@
+@import "tailwindcss";
+
+:root {
+  /* Phase 1 Design Tokens */
+  --bg-page: #F7F8FC;
+  --card-bg: #FFFFFF;
+  --border-color: #E4E7F2;
+  --border-hover: #CBD5E1;
+  --text-ink: #0F1535;
+  --text-soft-ink: #4A5173;
+  --text-muted: #828BAA;
+
+  /* Brand */
+  --brand-indigo: #4F46E5;
+  --brand-violet: #7C3AED;
+  --brand-pink: #EC4899;
+
+  /* Aurora Gradient */
+  --aurora-gradient: linear-gradient(135deg, #4F46E5 0%, #7C3AED 50%, #EC4899 100%);
+
+  /* Semantic Colours: Critical (Rose) */
+  --critical-solid: #F43F5E;
+  --critical-tint: #FFF1F2;
+  --critical-text: #BE123C;
+  --critical-border: #FECDD3;
+
+  /* Semantic Colours: Warning (Amber) */
+  --warning-solid: #F59E0B;
+  --warning-tint: #FFFBEB;
+  --warning-text: #B45309;
+  --warning-border: #FDE68A;
+
+  /* Semantic Colours: Pass (Emerald) */
+  --pass-solid: #10B981;
+  --pass-tint: #ECFDF5;
+  --pass-text: #047857;
+  --pass-border: #A7F3D0;
+
+  /* Semantic Colours: AI-Check (Violet) */
+  --ai-solid: #8B5CF6;
+  --ai-tint: #F5F3FF;
+  --ai-text: #6D28D9;
+  --ai-border: #DDD6FE;
+
+  /* Semantic Colours: Info (Teal) */
+  --info-solid: #14B8A6;
+  --info-tint: #F0FDFA;
+  --info-text: #0F766E;
+  --info-border: #99F6E4;
+
+  /* Dark Ink Panels */
+  --dark-ink-from: #0B1030;
+  --dark-ink-mid: #161244;
+  --dark-ink-to: #1B1450;
+
+  /* Transitions */
+  --theme-transition: background-color 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                      border-color 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                      color 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                      box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Vault Mode (Phase 4 Confidential Mode) */
+html.vault-mode,
+body.vault-mode {
+  --bg-page: #060919;
+  --card-bg: #0D132F;
+  --border-color: #1C2652;
+  --border-hover: #2F3E7C;
+  --text-ink: #F1F5F9;
+  --text-soft-ink: #94A3B8;
+  --text-muted: #64748B;
+
+  --critical-tint: rgba(244, 63, 94, 0.12);
+  --critical-text: #FB7185;
+  --critical-border: rgba(244, 63, 94, 0.25);
+
+  --warning-tint: rgba(245, 158, 11, 0.12);
+  --warning-text: #FBBF24;
+  --warning-border: rgba(245, 158, 11, 0.25);
+
+  --pass-tint: rgba(16, 185, 129, 0.14);
+  --pass-text: #34D399;
+  --pass-border: rgba(16, 185, 129, 0.3);
+
+  --ai-tint: rgba(139, 92, 246, 0.14);
+  --ai-text: #A78BFA;
+  --ai-border: rgba(139, 92, 246, 0.3);
+
+  --info-tint: rgba(20, 184, 166, 0.14);
+  --info-text: #2DD4BF;
+  --info-border: rgba(20, 184, 166, 0.3);
+}
+
+body {
+  background-color: var(--bg-page);
+  color: var(--text-ink);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: var(--theme-transition);
+}
+
+/* Custom sleek scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 9999px;
+}
+
+.vault-mode ::-webkit-scrollbar-thumb {
+  background: #2A3660;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* Frontify Minimalist Cards */
+.frontify-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 1.25rem;
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+              background-color 0.35s ease;
+}
+
+.frontify-card:hover {
+  transform: translateY(-2px);
+  border-color: #CBD5E1;
+  box-shadow: 0 12px 30px -10px rgba(15, 21, 53, 0.06);
+}
+
+.vault-mode .frontify-card:hover {
+  transform: translateY(-2px);
+  border-color: #384A88;
+  box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.4);
+}
+
+/* Glassmorphism Navbar */
+.frontify-glass {
+  background: rgba(247, 248, 252, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-color);
+  transition: var(--theme-transition);
+}
+
+.vault-mode .frontify-glass {
+  background: rgba(6, 9, 25, 0.88);
+  border-bottom-color: rgba(30, 41, 88, 0.9);
+  box-shadow: 0 4px 20px -2px rgba(16, 185, 129, 0.08);
+}
+
+/* Dark Ink Panel (Acrolinx Compliance Contrast) */
+.dark-ink-panel {
+  background: linear-gradient(135deg, #0B1030 0%, #161244 50%, #1B1450 100%);
+  border: 1px solid rgba(124, 58, 237, 0.25);
+  color: #FFFFFF;
+}
+
+/* Conic Gradient Border for Guideline Doctor */
+@keyframes spin-conic {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.conic-border-glow {
+  position: relative;
+  overflow: hidden;
+}
+
+.conic-border-glow::before {
+  content: '';
+  position: absolute;
+  inset: -150%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(124, 58, 237, 0.8) 60deg,
+    rgba(236, 72, 153, 0.8) 120deg,
+    transparent 180deg
+  );
+  animation: spin-conic 8s linear infinite;
+  z-index: 0;
+}
+
+.conic-border-inner {
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(135deg, #0B1030 0%, #161244 50%, #1B1450 100%);
+  border-radius: inherit;
+}
+
+/* Aurora Gradient Text & Button */
+.aurora-text {
+  background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 50%, #EC4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.aurora-button {
+  background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 50%, #EC4899 100%);
+  color: #FFFFFF;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 20px -2px rgba(124, 58, 237, 0.35);
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.aurora-button:hover {
+  transform: translateY(-1px) scale(1.01);
+  box-shadow: 0 8px 25px -2px rgba(124, 58, 237, 0.5);
+}
+
+.aurora-button:active {
+  transform: scale(0.98);
+}
+
+/* Shimmer Sweep Animation */
+.aurora-button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: all 0.75s ease;
+}
+
+.aurora-button:hover::after {
+  left: 150%;
+}
+
+/* Scanning Beam Animation */
+@keyframes scan-beam {
+  0% {
+    top: 0%;
+    opacity: 0.9;
+  }
+  90% {
+    opacity: 0.9;
+  }
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+}
+
+.scan-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #7C3AED, #EC4899, #10B981, transparent);
+  box-shadow: 0 0 18px 4px rgba(124, 58, 237, 0.6);
+  pointer-events: none;
+  z-index: 30;
+  animation: scan-beam 0.75s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Ambient Drifting Blobs (Phase 1 Atmosphere) */
+@keyframes drift-blob-1 {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  33% {
+    transform: translate(50px, -40px) scale(1.08);
+  }
+  66% {
+    transform: translate(-30px, 30px) scale(0.95);
+  }
+}
+
+@keyframes drift-blob-2 {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  33% {
+    transform: translate(-40px, 50px) scale(1.05);
+  }
+  66% {
+    transform: translate(45px, -25px) scale(0.92);
+  }
+}
+
+.ambient-blob-1 {
+  animation: drift-blob-1 25s ease-in-out infinite;
+}
+
+.ambient-blob-2 {
+  animation: drift-blob-2 28s ease-in-out infinite;
+}
+
+/* Subtle noise background */
+.vault-grid-bg {
+  background-image: 
+    linear-gradient(to right, rgba(28, 38, 82, 0.25) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(28, 38, 82, 0.25) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* ECG Heartbeat line animation */
+@keyframes ecg-dash {
+  to {
+    stroke-dashoffset: -200;
+  }
+}
+
+.ecg-path {
+  stroke-dasharray: 200;
+  animation: ecg-dash 2.4s linear infinite;
+}
