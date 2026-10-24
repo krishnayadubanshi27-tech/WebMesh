@@ -3,26 +3,6 @@
 A bespoke, pixel-perfect, and enterprise-grade SaaS web application built with **Next.js (App Router)**, **TypeScript**, **Tailwind CSS**, and **Framer Motion**. It strictly incorporates the minimalist design language of **Frontify** and the deep content compliance and auditing intelligence of **Acrolinx**.
 
 ---
-
-## 🚀 Live Local Server
-
-The development server is actively running at:
-- **Local:** [http://localhost:3000](http://localhost:3000)
-- **Network:** `http://192.168.0.100:3000`
-
-To start or restart manually in the terminal:
-```bash
-npm run dev
-```
-
-To build for production:
-```bash
-npm run build
-npm run start
-```
-
----
-
 ## 🎨 Design System & Visual Architecture
 
 - **Frontify Minimalist Canvas**: Stark white card surfaces (`#FFFFFF`), subtle off-white backgrounds (`#F8FAFC`), crisp hairline borders (`border-slate-200`), geometric sans typography (Plus Jakarta Sans), and Frontify Cobalt Indigo (`#2A59FE`).
