@@ -17,7 +17,7 @@ export const ConfidentialBanner: React.FC<ConfidentialBannerProps> = ({ isActive
           animate={{ height: 'auto', opacity: 1 }}
           exit={{ height: 0, opacity: 0 }}
           transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-          className="overflow-hidden bg-[#070D22] text-white border-b border-emerald-500/30 shadow-[0_4px_24px_rgba(16,185,129,0.12)] relative z-40"
+          className="overflow-hidden bg-[#070D22] text-white surface-dark border-b border-emerald-500/30 shadow-[0_4px_24px_rgba(16,185,129,0.12)] relative z-40"
         >
           {/* Subtle grid accent inside banner */}
           <div className="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:16px_16px]" />

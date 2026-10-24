@@ -95,7 +95,7 @@ const SpotlightCard: React.FC<{
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`relative overflow-hidden frontify-card ${className}`}
+      className={`relative overflow-hidden frontify-card surface-light ${className}`}
     >
       {/* Dynamic Cursor Spotlight */}
       <div
@@ -724,14 +724,14 @@ export const BrandBrainTab: React.FC<BrandBrainTabProps> = ({
     filteredBannedWords.length + filteredFacts.length + filteredColors.length + filteredA11y.length;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 surface-light">
       {/* PHASE 2: Brand Brain Hero with Left-Aligned Headline & Governance Health Strip */}
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-2">
         <div className="max-w-2xl">
           <div className="flex items-center gap-2 text-xs font-bold text-indigo-600 uppercase tracking-wider mb-2">
             <BookOpen className="w-4 h-4" />
             <span>Central Brand Governance Architecture</span>
-            <span className="text-[var(--text-muted)]">•</span>
+            <span className="text-[color:var(--fg-subtle)]">•</span>
             <span
               className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold ${
                 supabaseConnected
@@ -749,10 +749,10 @@ export const BrandBrainTab: React.FC<BrandBrainTabProps> = ({
             </span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl lg:text-[42px] font-black tracking-tight text-[var(--text-ink)] leading-tight">
+          <h1 className="text-3xl sm:text-4xl lg:text-[42px] font-black tracking-tight text-[color:var(--fg)] leading-tight">
             Brand Governance <span className="aurora-text">Architecture</span>
           </h1>
-          <p className="text-sm sm:text-[15px] text-[var(--text-soft-ink)] mt-2 leading-relaxed">
+          <p className="text-sm sm:text-[15px] text-[color:var(--fg-muted)] mt-2 leading-relaxed">
             Single-source-of-truth styleguide: deterministic terminology rules, verified factual claims, visual hex specifications, and accessibility mandates.
           </p>
         </div>
@@ -760,13 +760,13 @@ export const BrandBrainTab: React.FC<BrandBrainTabProps> = ({
         {/* Global Search & Action Triggers */}
         <div className="flex flex-wrap items-center gap-3">
           <div className="relative">
-            <Search className="w-4 h-4 text-[var(--text-muted)] absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-[color:var(--fg-muted)] absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               placeholder="Search all 4 pillars..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 pr-9 py-2.5 text-xs bg-[var(--card-bg)] border border-[var(--border-color)] rounded-xl w-60 sm:w-72 text-[var(--text-ink)] focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 shadow-xs transition-all"
+              className="pl-9 pr-9 py-2.5 text-xs bg-white border border-[color:var(--line)] rounded-xl w-60 sm:w-72 text-[color:var(--fg)] placeholder:text-[color:var(--fg-muted)] focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 shadow-xs transition-all"
             />
             {searchQuery && (
               <button
@@ -782,7 +782,7 @@ export const BrandBrainTab: React.FC<BrandBrainTabProps> = ({
             onClick={fetchAllPillars}
             disabled={isLoading}
             title="Refresh database records"
-            className="p-2.5 text-[var(--text-soft-ink)] hover:text-[var(--text-ink)] hover:bg-slate-200/50 border border-[var(--border-color)] rounded-xl transition-colors cursor-pointer shadow-xs bg-[var(--card-bg)]"
+            className="p-2.5 text-[color:var(--fg-muted)] hover:text-[color:var(--fg)] hover:bg-slate-200/50 border border-[color:var(--line)] rounded-xl transition-colors cursor-pointer shadow-xs bg-white"
           >
             <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin text-indigo-600' : ''}`} />
           </button>
@@ -801,61 +801,61 @@ export const BrandBrainTab: React.FC<BrandBrainTabProps> = ({
       {/* Governance Health Strip: 4 Animated Stat Chips with Count-Up Numbers */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Stat 1: Active Rules */}
-        <div className="frontify-card p-4 flex items-center gap-3.5">
+        <div className="frontify-card surface-light p-4 flex items-center gap-3.5">
           <div className="w-11 h-11 rounded-2xl bg-indigo-500/10 text-indigo-600 flex items-center justify-center shrink-0 border border-indigo-500/20">
             <BookOpen className="w-5 h-5" />
           </div>
           <div>
-            <div className="text-2xl font-black text-[var(--text-ink)] tracking-tight">
+            <div className="text-2xl font-black text-[color:var(--fg)] tracking-tight">
               {filteredBannedWords.length}
             </div>
-            <div className="text-[11px] font-bold text-[var(--text-soft-ink)] uppercase tracking-wider">
+            <div className="text-[11px] font-bold text-[color:var(--fg-muted)] uppercase tracking-wider">
               Rules Active
             </div>
           </div>
         </div>
 
         {/* Stat 2: Verified Facts */}
-        <div className="frontify-card p-4 flex items-center gap-3.5">
+        <div className="frontify-card surface-light p-4 flex items-center gap-3.5">
           <div className="w-11 h-11 rounded-2xl bg-teal-500/10 text-teal-600 flex items-center justify-center shrink-0 border border-teal-500/20">
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
-            <div className="text-2xl font-black text-[var(--text-ink)] tracking-tight">
+            <div className="text-2xl font-black text-[color:var(--fg)] tracking-tight">
               {filteredFacts.length}
             </div>
-            <div className="text-[11px] font-bold text-[var(--text-soft-ink)] uppercase tracking-wider">
+            <div className="text-[11px] font-bold text-[color:var(--fg-muted)] uppercase tracking-wider">
               Facts Certified
             </div>
           </div>
         </div>
 
         {/* Stat 3: Palette Tokens */}
-        <div className="frontify-card p-4 flex items-center gap-3.5">
+        <div className="frontify-card surface-light p-4 flex items-center gap-3.5">
           <div className="w-11 h-11 rounded-2xl bg-violet-500/10 text-violet-600 flex items-center justify-center shrink-0 border border-violet-500/20">
             <Palette className="w-5 h-5" />
           </div>
           <div>
-            <div className="text-2xl font-black text-[var(--text-ink)] tracking-tight">
+            <div className="text-2xl font-black text-[color:var(--fg)] tracking-tight">
               {filteredColors.length}
             </div>
-            <div className="text-[11px] font-bold text-[var(--text-soft-ink)] uppercase tracking-wider">
+            <div className="text-[11px] font-bold text-[color:var(--fg-muted)] uppercase tracking-wider">
               Palette Tokens
             </div>
           </div>
         </div>
 
         {/* Stat 4: WCAG Pass Rate with Mini Coverage Ring */}
-        <div className="frontify-card p-4 flex items-center justify-between">
+        <div className="frontify-card surface-light p-4 flex items-center justify-between">
           <div className="flex items-center gap-3.5">
             <div className="w-11 h-11 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-500/20">
               <Award className="w-5 h-5" />
             </div>
             <div>
-              <div className="text-2xl font-black text-[var(--text-ink)] tracking-tight">
+              <div className="text-2xl font-black text-[color:var(--fg)] tracking-tight">
                 98.4%
               </div>
-              <div className="text-[11px] font-bold text-[var(--text-soft-ink)] uppercase tracking-wider">
+              <div className="text-[11px] font-bold text-[color:var(--fg-muted)] uppercase tracking-wider">
                 WCAG Pass Rate
               </div>
             </div>
@@ -1338,7 +1338,7 @@ export const BrandBrainTab: React.FC<BrandBrainTabProps> = ({
       {/* Dynamic Rule Acquisition Section: AI Generation & Brand Templates */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left (7 cols): AI Auto-Generation Bar */}
-        <div className="lg:col-span-7 frontify-card p-6 flex flex-col justify-between space-y-4">
+        <div className="lg:col-span-7 frontify-card surface-light p-6 flex flex-col justify-between space-y-4">
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-600 shadow-xs">
@@ -1411,7 +1411,7 @@ export const BrandBrainTab: React.FC<BrandBrainTabProps> = ({
         </div>
 
         {/* Right (5 cols): Pre-Built Brand Templates */}
-        <div className="lg:col-span-5 frontify-card p-6 flex flex-col justify-between space-y-4">
+        <div className="lg:col-span-5 frontify-card surface-light p-6 flex flex-col justify-between space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Users className="w-4 h-4 text-indigo-600" />
@@ -1477,7 +1477,7 @@ export const BrandBrainTab: React.FC<BrandBrainTabProps> = ({
               initial={{ scale: 0.95, opacity: 0, y: 16 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 16 }}
-              className="relative w-full max-w-lg bg-[var(--card-bg)] rounded-3xl shadow-2xl border border-[var(--border-color)] p-6 z-10 space-y-4"
+              className="relative w-full max-w-lg bg-white surface-light rounded-3xl shadow-2xl border border-[color:var(--line)] p-6 z-10 space-y-4"
             >
               <div className="flex items-center justify-between pb-3 border-b border-[var(--border-color)]">
                 <div className="flex items-center gap-2.5">

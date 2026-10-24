@@ -380,13 +380,13 @@ export const StudioTab: React.FC<StudioTabProps> = ({
 
         {/* Mode Switcher & Presets */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-          <div className="flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-2xl text-xs font-semibold">
+          <div className="flex items-center bg-slate-100 p-1 rounded-2xl border border-[color:var(--line)] text-xs font-semibold">
             <button
               type="button"
               onClick={() => setActiveStudioMode('copilot')}
               className={`px-3.5 py-1.5 rounded-xl transition-all cursor-pointer ${
                 activeStudioMode === 'copilot'
-                  ? 'bg-white dark:bg-slate-900 text-[color:var(--fg)] shadow-xs font-black'
+                  ? 'bg-white text-[color:var(--fg)] shadow-xs font-black border border-[color:var(--line)]'
                   : 'text-[color:var(--fg-muted)] hover:text-[color:var(--fg)] font-bold'
               }`}
             >
@@ -412,10 +412,10 @@ export const StudioTab: React.FC<StudioTabProps> = ({
                 <button
                   key={p.id}
                   onClick={() => handleSelectPreset(p.id)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
                     selectedPresetId === p.id
-                      ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xs'
-                      : 'bg-slate-100 dark:bg-slate-800 text-[color:var(--fg-muted)] hover:bg-slate-200 hover:text-[color:var(--fg)]'
+                      ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs'
+                      : 'bg-slate-100 hover:bg-slate-200 text-[color:var(--fg-muted)] hover:text-[color:var(--fg)] border-transparent'
                   }`}
                 >
                   {p.title}
@@ -468,12 +468,12 @@ export const StudioTab: React.FC<StudioTabProps> = ({
                   </button>
 
                   {/* View Mode Toggle */}
-                  <div className="flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-xl text-xs font-semibold">
+                  <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-[color:var(--line)] text-xs font-semibold">
                     <button
                       onClick={() => setViewMode('edit')}
                       className={`px-3 py-1 rounded-lg transition-colors cursor-pointer flex items-center gap-1 ${
                         viewMode === 'edit'
-                          ? 'bg-white dark:bg-slate-900 text-[color:var(--fg)] shadow-xs font-bold'
+                          ? 'bg-white text-[color:var(--fg)] shadow-xs font-bold border border-[color:var(--line)]'
                           : 'text-[color:var(--fg-muted)] hover:text-[color:var(--fg)] font-medium'
                       }`}
                     >
@@ -484,7 +484,7 @@ export const StudioTab: React.FC<StudioTabProps> = ({
                       onClick={() => setViewMode('inspect')}
                       className={`px-3 py-1 rounded-lg transition-colors cursor-pointer flex items-center gap-1 ${
                         viewMode === 'inspect'
-                          ? 'bg-white dark:bg-slate-900 text-[color:var(--fg)] shadow-xs font-bold'
+                          ? 'bg-white text-[color:var(--fg)] shadow-xs font-bold border border-[color:var(--line)]'
                           : 'text-[color:var(--fg-muted)] hover:text-[color:var(--fg)] font-medium'
                       }`}
                     >
@@ -503,7 +503,7 @@ export const StudioTab: React.FC<StudioTabProps> = ({
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -8 }}
                     transition={springTransition}
-                    className="mb-4 p-4 rounded-2xl bg-slate-900 text-white shadow-2xl border border-slate-700 text-xs space-y-3"
+                    className="mb-4 p-4 rounded-2xl bg-[#0F1535] text-white shadow-2xl border border-[#232B56] text-xs space-y-3"
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
@@ -526,7 +526,7 @@ export const StudioTab: React.FC<StudioTabProps> = ({
                       {activeTooltipIssue.explanation}
                     </p>
 
-                    <div className="flex items-center justify-between pt-2.5 border-t border-slate-800 gap-3">
+                    <div className="flex items-center justify-between pt-2.5 border-t border-[#232B56] gap-3">
                       <span className="text-slate-400 text-xs">
                         Suggested: <strong className="text-emerald-400 font-bold">&quot;{activeTooltipIssue.replacement}&quot;</strong>
                       </span>
@@ -619,7 +619,7 @@ export const StudioTab: React.FC<StudioTabProps> = ({
               {uploadedLogo ? (
                 <div className="p-4 rounded-2xl bg-slate-50 border border-[color:var(--line)] flex flex-col sm:flex-row items-center justify-between gap-4">
                   <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-xl bg-slate-900 flex items-center justify-center p-2 border border-slate-300">
+                    <div className="w-16 h-16 rounded-xl bg-indigo-600 flex items-center justify-center p-2 border border-indigo-500 shadow-xs">
                       <div className="text-white font-black text-xl tracking-tight">BM</div>
                     </div>
                     <div>
@@ -843,7 +843,7 @@ export const StudioTab: React.FC<StudioTabProps> = ({
                       onClick={() => setActiveIssueTab(tab)}
                       className={`px-2.5 py-1 rounded capitalize transition-colors ${
                         activeIssueTab === tab
-                          ? 'bg-slate-900 text-white font-bold'
+                          ? 'bg-indigo-600 text-white font-bold shadow-xs'
                           : 'text-[color:var(--fg-muted)] hover:text-[color:var(--fg)] hover:bg-slate-100'
                       }`}
                     >

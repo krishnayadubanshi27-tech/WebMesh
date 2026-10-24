@@ -156,7 +156,7 @@ export const OverlayTextEditor: React.FC<OverlayTextEditorProps> = ({
         autoCapitalize="off"
         className={`absolute inset-0 w-full h-full bg-transparent resize-none border-0 outline-none ${sharedTypographyStyles} ${
           value ? 'text-transparent' : 'text-[color:var(--fg)]'
-        } caret-[#4F46E5] placeholder:text-[color:var(--fg-muted)] [&::placeholder]:[-webkit-text-fill-color:var(--fg-muted)] selection:bg-indigo-500/25 z-10`}
+        } caret-[#4F46E5] placeholder:text-[color:var(--fg-muted)] [&::placeholder]:[-webkit-text-fill-color:var(--fg-muted)] selection:bg-indigo-500/25 selection:text-transparent selection:[-webkit-text-fill-color:transparent] z-10`}
         style={{
           boxSizing: 'border-box',
           wordBreak: 'break-word',

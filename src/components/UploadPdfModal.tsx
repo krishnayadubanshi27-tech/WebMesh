@@ -198,24 +198,24 @@ Acme Global Enterprise Brand Guidelines & Compliance Standard (v4.2)
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 16 }}
             transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-            className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden z-10"
+            className="relative w-full max-w-2xl bg-white surface-light rounded-3xl shadow-2xl border border-[color:var(--line)] overflow-hidden z-10"
           >
             {/* Header */}
-            <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+            <div className="p-6 border-b border-[color:var(--line)] flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#2A59FE] to-indigo-500 text-white flex items-center justify-center shadow-xs">
                   <Sparkles className="w-5 h-5" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h3 className="text-base font-bold text-slate-900">
+                    <h3 className="text-base font-bold text-[color:var(--fg)]">
                       Upload Brand Guidelines PDF
                     </h3>
                     <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-blue-50 text-[#2A59FE] border border-blue-200">
                       pdf-parse & Gemini AI
                     </span>
                   </div>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-[color:var(--fg-muted)]">
                     Extracts text with pdf-parse, structures with Gemini AI, and syncs to Supabase.
                   </p>
                 </div>

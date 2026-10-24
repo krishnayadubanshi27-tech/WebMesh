@@ -61,23 +61,23 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
   return (
     <div className="space-y-6">
       {/* Top Header Card */}
-      <div className="frontify-card p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="frontify-card surface-light p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 text-xs font-bold text-brand-primary uppercase tracking-wider">
             <BarChart3 className="w-4 h-4 text-brand-primary" />
             <span>Executive Governance Intelligence</span>
           </div>
-          <h1 className="text-2xl font-black text-ink-primary tracking-tight mt-0.5">
+          <h1 className="text-2xl font-black text-[color:var(--fg)] tracking-tight mt-0.5">
             Insights & <span className="aurora-text">Guideline Doctor</span>
           </h1>
-          <p className="text-xs text-ink-secondary">
+          <p className="text-xs text-[color:var(--fg-muted)]">
             Empirical compliance telemetry, rule friction diagnostics, and self-healing brand guidelines.
           </p>
         </div>
 
         {/* 7d / 30d / 90d Segmented Range with Sliding LayoutId Thumb */}
         <div className="flex items-center gap-3">
-          <div className="relative flex items-center bg-bg-app p-1 rounded-2xl border border-border-card text-xs font-bold">
+          <div className="relative flex items-center bg-bg-app p-1 rounded-2xl border border-[color:var(--line)] text-xs font-bold">
             {(['7d', '30d', '90d'] as const).map((range) => {
               const isActive = timeRange === range;
               return (
@@ -85,14 +85,14 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
                   key={range}
                   onClick={() => setTimeRange(range)}
                   className={`relative px-3.5 py-1.5 transition-colors cursor-pointer z-10 ${
-                    isActive ? 'text-ink-primary font-black' : 'text-ink-secondary hover:text-ink-primary'
+                    isActive ? 'text-[color:var(--fg)] font-black' : 'text-[color:var(--fg-muted)] hover:text-[color:var(--fg)]'
                   }`}
                 >
                   {isActive && (
                     <motion.div
                       layoutId="range-slider-thumb"
                       transition={springTransition}
-                      className="absolute inset-0 bg-bg-card rounded-xl shadow-xs border border-border-card"
+                      className="absolute inset-0 bg-bg-card rounded-xl shadow-xs border border-[color:var(--line)]"
                     />
                   )}
                   <span className="relative z-10">
@@ -103,7 +103,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
             })}
           </div>
 
-          <button className="px-3.5 py-2 text-xs font-bold text-ink-primary bg-bg-card hover:bg-bg-app rounded-xl border border-border-card flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs active:scale-95">
+          <button className="px-3.5 py-2 text-xs font-bold text-[color:var(--fg)] bg-bg-card hover:bg-bg-app rounded-xl border border-[color:var(--line)] flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs active:scale-95">
             <Download className="w-3.5 h-3.5 text-brand-primary" />
             <span className="hidden sm:inline">Export Audit PDF</span>
           </button>
@@ -114,10 +114,10 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <motion.div
           whileHover={{ y: -3, transition: springTransition }}
-          className="frontify-card p-5 space-y-1.5 relative overflow-hidden"
+          className="frontify-card surface-light p-5 space-y-1.5 relative overflow-hidden"
         >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-ink-secondary">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[color:var(--fg-muted)]">
               Total Assets Audited
             </span>
             <div className="w-2 h-2 rounded-full bg-brand-primary/40" />
@@ -127,7 +127,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
               key={timeRange}
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-3xl font-black text-ink-primary tracking-tight"
+              className="text-3xl font-black text-[color:var(--fg)] tracking-tight"
             >
               {timeRange === '7d' ? '482' : timeRange === '90d' ? '5,820' : '1,952'}
             </motion.span>
@@ -135,15 +135,15 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
               <TrendingUp className="w-3 h-3 mr-0.5" /> +18.4%
             </span>
           </div>
-          <p className="text-[11px] text-ink-secondary">Across 14 enterprise workspaces</p>
+          <p className="text-[11px] text-[color:var(--fg-muted)]">Across 14 enterprise workspaces</p>
         </motion.div>
 
         <motion.div
           whileHover={{ y: -3, transition: springTransition }}
-          className="frontify-card p-5 space-y-1.5 relative overflow-hidden"
+          className="frontify-card surface-light p-5 space-y-1.5 relative overflow-hidden"
         >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-ink-secondary">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[color:var(--fg-muted)]">
               Overall Trust Index
             </span>
             <div className="w-2 h-2 rounded-full bg-emerald-500/40" />
@@ -153,7 +153,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
               key={timeRange}
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-3xl font-black text-ink-primary tracking-tight"
+              className="text-3xl font-black text-[color:var(--fg)] tracking-tight"
             >
               {timeRange === '7d' ? '92.8%' : timeRange === '90d' ? '89.4%' : '91.4%'}
             </motion.span>
@@ -161,15 +161,15 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
               <TrendingUp className="w-3 h-3 mr-0.5" /> +6.2%
             </span>
           </div>
-          <p className="text-[11px] text-ink-secondary">Target threshold: 90% benchmark</p>
+          <p className="text-[11px] text-[color:var(--fg-muted)]">Target threshold: 90% benchmark</p>
         </motion.div>
 
         <motion.div
           whileHover={{ y: -3, transition: springTransition }}
-          className="frontify-card p-5 space-y-1.5 relative overflow-hidden"
+          className="frontify-card surface-light p-5 space-y-1.5 relative overflow-hidden"
         >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-ink-secondary">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[color:var(--fg-muted)]">
               1-Click Fix Adoption
             </span>
             <div className="w-2 h-2 rounded-full bg-indigo-500/40" />
@@ -179,7 +179,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
               key={timeRange}
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-3xl font-black text-ink-primary tracking-tight"
+              className="text-3xl font-black text-[color:var(--fg)] tracking-tight"
             >
               84.7%
             </motion.span>
@@ -187,15 +187,15 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
               <Sparkles className="w-3 h-3 mr-0.5" /> High
             </span>
           </div>
-          <p className="text-[11px] text-ink-secondary">Saved ~340 review hours this period</p>
+          <p className="text-[11px] text-[color:var(--fg-muted)]">Saved ~340 review hours this period</p>
         </motion.div>
 
         <motion.div
           whileHover={{ y: -3, transition: springTransition }}
-          className="frontify-card p-5 space-y-1.5 relative overflow-hidden"
+          className="frontify-card surface-light p-5 space-y-1.5 relative overflow-hidden"
         >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-ink-secondary">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[color:var(--fg-muted)]">
               Manual Escalation Rate
             </span>
             <div className="w-2 h-2 rounded-full bg-rose-500/40" />
@@ -205,7 +205,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
               key={timeRange}
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-3xl font-black text-ink-primary tracking-tight"
+              className="text-3xl font-black text-[color:var(--fg)] tracking-tight"
             >
               6.2%
             </motion.span>
@@ -213,7 +213,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
               <TrendingDown className="w-3 h-3 mr-0.5" /> -4.1%
             </span>
           </div>
-          <p className="text-[11px] text-ink-secondary">Down from 10.3% previous baseline</p>
+          <p className="text-[11px] text-[color:var(--fg-muted)]">Down from 10.3% previous baseline</p>
         </motion.div>
       </div>
 
@@ -223,7 +223,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
         <div className="conic-border-glow absolute -inset-[200%] opacity-80" />
 
         {/* Dark Ink Panel Interior */}
-        <div className="relative z-10 dark-ink-panel p-6 sm:p-8 rounded-[23px] text-white space-y-6">
+        <div className="relative z-10 dark-ink-panel surface-dark p-6 sm:p-8 rounded-[23px] text-[color:var(--fg)] space-y-6">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             <div className="flex items-start gap-4 sm:gap-5">
               {/* Doctor Stethoscope Badge */}
@@ -242,11 +242,11 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
                   </span>
                 </div>
 
-                <h2 className="text-lg sm:text-xl font-black text-white tracking-tight">
+                <h2 className="text-lg sm:text-xl font-black text-[color:var(--fg)] tracking-tight">
                   Pricing Rule #PR-02 (&quot;Unhedged Guarantees&quot;) violated 14 times
                 </h2>
 
-                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-5xl">
+                <p className="text-xs sm:text-sm text-[color:var(--fg-muted)] leading-relaxed max-w-5xl">
                   <strong>Empirical Clinical Finding:</strong> Enterprise Demand Generation and Sales teams frequently draft SLA assurance, but an absolute prohibition on assurance phrasing forces <strong>68% of marketing assets</strong> into manual legal escalation queues.
                 </p>
               </div>
@@ -283,12 +283,12 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
           </div>
 
           {/* Before vs After Rule Simplification Box */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white/[0.04] p-4.5 rounded-2xl border border-white/10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white/[0.04] p-4.5 rounded-2xl border border-[color:var(--line)]">
             <div className="space-y-1.5">
               <span className="text-[10px] font-bold uppercase tracking-wider text-rose-400 bg-rose-500/20 px-2 py-0.5 rounded border border-rose-500/30">
                 Current Restrictive Rule:
               </span>
-              <p className="text-xs text-slate-300 leading-relaxed font-mono bg-black/30 p-2.5 rounded-xl border border-white/5">
+              <p className="text-xs text-[color:var(--fg)] leading-relaxed font-mono bg-black/40 p-2.5 rounded-xl border border-white/10">
                 &quot;Prohibit all assurance phrasing ('guarantee', 'commit', 'promise') across marketing collateral unconditionally.&quot;
               </p>
             </div>
@@ -297,7 +297,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
               <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-500/30">
                 Prescribed Self-Healing Rule:
               </span>
-              <p className="text-xs text-emerald-200 leading-relaxed font-mono bg-black/30 p-2.5 rounded-xl border border-emerald-500/30">
+              <p className="text-xs text-emerald-200 leading-relaxed font-mono bg-black/40 p-2.5 rounded-xl border border-emerald-500/30">
                 &quot;Permit SLA-hedged commitments with verified hyperlink: <em>'Commit to 99.99% uptime subject to Enterprise SLA terms.'</em>&quot;
               </p>
             </div>
@@ -305,7 +305,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
 
           {/* Bottom Action Row */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1">
-            <div className="flex items-center gap-2 text-xs text-slate-300">
+            <div className="flex items-center gap-2 text-xs text-[color:var(--fg-muted)]">
               <Zap className="w-4 h-4 text-brand-primary" />
               <span>Projected impact: Eliminates 38 false-positive review blocks per month.</span>
             </div>
@@ -336,17 +336,17 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
       {/* Main Analytics Grid: Custom Bar Chart (7 Cols) & Department Leaderboard (5 Cols) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Custom SVG/Div Bar Chart with Sparkline Tooltips & Staggered Bar Animations */}
-        <div className="lg:col-span-7 frontify-card p-6 flex flex-col justify-between space-y-5">
+        <div className="lg:col-span-7 frontify-card surface-light p-6 flex flex-col justify-between space-y-5">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-sm font-bold text-ink-primary">
+              <h3 className="text-sm font-bold text-[color:var(--fg)]">
                 Most Frequently Violated Brand Rules
               </h3>
-              <p className="text-xs text-ink-secondary">
+              <p className="text-xs text-[color:var(--fg-muted)]">
                 Empirical friction density by policy code ({timeRange.toUpperCase()} view)
               </p>
             </div>
-            <span className="text-xs font-bold text-ink-secondary bg-bg-app px-2.5 py-1 rounded-full border border-border-card">
+            <span className="text-xs font-bold text-[color:var(--fg-muted)] bg-bg-app px-2.5 py-1 rounded-full border border-[color:var(--line)]">
               Total Flags: {Math.round(151 * rangeMultiplier)}
             </span>
           </div>
@@ -373,21 +373,21 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
                   key={rule.id}
                   onMouseEnter={() => setHoveredRule(rule)}
                   onMouseLeave={() => setHoveredRule(null)}
-                  className="p-3.5 rounded-2xl hover:bg-bg-app transition-all cursor-pointer space-y-2 border border-transparent hover:border-border-card relative group"
+                  className="p-3.5 rounded-2xl hover:bg-bg-app transition-all cursor-pointer space-y-2 border border-transparent hover:border-[color:var(--line)] relative group"
                 >
                   <div className="flex items-center justify-between text-xs">
                     <div className="flex items-center gap-2">
-                      <span className="font-mono font-bold text-ink-secondary text-[11px] bg-bg-card px-1.5 py-0.5 rounded border border-border-card">
+                      <span className="font-mono font-bold text-[color:var(--fg-muted)] text-[11px] bg-bg-card px-1.5 py-0.5 rounded border border-[color:var(--line)]">
                         {rule.ruleCode}
                       </span>
-                      <span className="font-bold text-ink-primary">{rule.ruleName}</span>
+                      <span className="font-bold text-[color:var(--fg)]">{rule.ruleName}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <motion.span
                         key={adjustedCount}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        className="font-black text-ink-primary"
+                        className="font-black text-[color:var(--fg)]"
                       >
                         {adjustedCount} violations
                       </motion.span>
@@ -415,12 +415,12 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
                     />
                   </div>
 
-                  <div className="flex items-center justify-between text-[11px] text-ink-secondary">
+                  <div className="flex items-center justify-between text-[11px] text-[color:var(--fg-muted)]">
                     <span>
-                      Category: <strong className="text-ink-primary font-semibold">{rule.category}</strong>
+                      Category: <strong className="text-[color:var(--fg)] font-semibold">{rule.category}</strong>
                     </span>
                     <span>
-                      Primary Friction: <strong className="text-ink-primary font-semibold">{rule.primaryDepartment}</strong>
+                      Primary Friction: <strong className="text-[color:var(--fg)] font-semibold">{rule.primaryDepartment}</strong>
                     </span>
                   </div>
 
@@ -432,11 +432,11 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 4, scale: 0.96 }}
                         transition={springTransition}
-                        className="absolute left-1/2 -top-16 -translate-x-1/2 z-30 bg-ink-primary text-white text-[11px] px-3.5 py-2.5 rounded-2xl shadow-xl border border-white/10 flex items-center gap-3 pointer-events-none"
+                        className="absolute left-1/2 -top-16 -translate-x-1/2 z-30 bg-slate-900 surface-dark text-[color:var(--fg)] text-[11px] px-3.5 py-2.5 rounded-2xl shadow-xl border border-white/10 flex items-center gap-3 pointer-events-none"
                       >
                         <div>
-                          <div className="font-black">{rule.ruleName}</div>
-                          <div className="text-slate-400 text-[10px]">
+                          <div className="font-black text-[color:var(--fg)]">{rule.ruleName}</div>
+                          <div className="text-[color:var(--fg-subtle)] text-[10px]">
                             {adjustedCount} incidents in {timeRange} • {rule.trendPercent}% {rule.trend}
                           </div>
                         </div>
@@ -468,7 +468,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
         </div>
 
         {/* Department Leaderboard (5 Cols) */}
-        <div className="lg:col-span-5 frontify-card p-6 flex flex-col justify-between space-y-5">
+        <div className="lg:col-span-5 frontify-card surface-light p-6 flex flex-col justify-between space-y-5">
           <div>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
@@ -476,10 +476,10 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
                   <Building2 className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-ink-primary">
+                  <h3 className="text-sm font-bold text-[color:var(--fg)]">
                     Departmental Compliance Index
                   </h3>
-                  <p className="text-xs text-ink-secondary">
+                  <p className="text-xs text-[color:var(--fg-muted)]">
                     Real-time cross-enterprise alignment benchmarks
                   </p>
                 </div>
@@ -490,12 +490,12 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
               {departmentMetrics.map((dm) => (
                 <div
                   key={dm.department}
-                  className="p-3.5 rounded-2xl bg-bg-app border border-border-card space-y-2 hover:border-brand-primary/30 transition-colors"
+                  className="p-3.5 rounded-2xl bg-bg-app border border-[color:var(--line)] space-y-2 hover:border-brand-primary/30 transition-colors"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <span className={`w-2.5 h-2.5 rounded-full ${dm.avatarColor}`} />
-                      <span className="text-xs font-bold text-ink-primary">
+                      <span className="text-xs font-bold text-[color:var(--fg)]">
                         {dm.department}
                       </span>
                     </div>
@@ -527,9 +527,9 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
                     />
                   </div>
 
-                  <div className="flex items-center justify-between text-[11px] text-ink-secondary pt-1">
+                  <div className="flex items-center justify-between text-[11px] text-[color:var(--fg-muted)] pt-1">
                     <span>{Math.round(dm.totalAssets * rangeMultiplier)} assets submitted</span>
-                    <span className="font-semibold text-ink-primary">
+                    <span className="font-semibold text-[color:var(--fg)]">
                       {Math.max(1, Math.round(dm.activeViolations * rangeMultiplier))} pending review flags
                     </span>
                   </div>

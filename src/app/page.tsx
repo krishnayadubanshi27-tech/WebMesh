@@ -182,13 +182,13 @@ export default function Home() {
       </AnimatePresence>
 
       {/* Footer */}
-      <footer className="mt-auto border-t border-[var(--border-color)] bg-[var(--card-bg)] py-6 transition-colors">
-        <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-14 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[var(--text-soft-ink)]">
+      <footer className="mt-auto border-t border-[color:var(--line)] bg-white/70 backdrop-blur-md surface-light py-6 transition-colors">
+        <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-14 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[color:var(--fg-muted)]">
           <div className="flex items-center gap-2">
-            <span className="font-extrabold text-[var(--text-ink)]">BrandMesh</span>
+            <span className="font-extrabold text-[color:var(--fg)]">BrandMesh</span>
             <span>• Frontify & Acrolinx Enterprise Compliance Standard</span>
           </div>
-          <div className="flex items-center gap-4 text-[var(--text-muted)]">
+          <div className="flex items-center gap-4 text-[color:var(--fg-subtle)]">
             <span>SOC2 Type II Certified</span>
             <span>•</span>
             <span>WCAG 2.2 AAA Compliant</span>
