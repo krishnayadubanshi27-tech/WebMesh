@@ -1,6 +1,6 @@
 # BrandMesh: AI Brand Governance Co-Pilot
 
-A bespoke, pixel-perfect, and enterprise-grade SaaS web application built with **Next.js (App Router)**, **TypeScript**, **Tailwind CSS**, and **Framer Motion**. It strictly incorporates the minimalist design language of **Frontify** and the deep content compliance and auditing intelligence of **Acrolinx**.
+A bespoke, pixel-perfect, and enterprise-grade SaaS web application built with **Next.js (App Router)**, **TypeScript**, **Tailwind CSS**, and **Framer Motion**.
 
 ---
 ## 🎨 Design System & Visual Architecture
