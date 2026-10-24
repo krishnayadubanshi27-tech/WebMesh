@@ -49,7 +49,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full h-16 frontify-glass transition-colors">
+    <header className="sticky top-0 z-50 w-full h-16 frontify-glass surface-light transition-colors">
       <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-14 h-full flex items-center justify-between gap-4">
         {/* Left: Brand Identity */}
         <div className="flex items-center gap-6">

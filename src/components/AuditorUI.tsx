@@ -63,7 +63,7 @@ export default function AuditorUI({ initialText = '', brandId = 1 }: AuditorUIPr
   // Function to highlight banned words in red
   const renderHighlightedText = () => {
     if (bannedWordsFound.length === 0) {
-      return <p className="text-slate-800 leading-relaxed whitespace-pre-wrap">{inputText}</p>;
+      return <p className="text-[color:var(--fg)] leading-relaxed whitespace-pre-wrap">{inputText}</p>;
     }
 
     // Escape regex special chars to prevent syntax errors
@@ -78,7 +78,7 @@ export default function AuditorUI({ initialText = '', brandId = 1 }: AuditorUIPr
     const lowerBanned = bannedWordsFound.map((w) => w.toLowerCase());
 
     return (
-      <div className="text-slate-800 leading-relaxed whitespace-pre-wrap">
+      <div className="text-[color:var(--fg)] leading-relaxed whitespace-pre-wrap">
         {parts.map((part, index) =>
           lowerBanned.includes(part.toLowerCase()) ? (
             <span
@@ -127,25 +127,25 @@ export default function AuditorUI({ initialText = '', brandId = 1 }: AuditorUIPr
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6">
       {/* Header Card */}
-      <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+      <div className="surface-light p-6 rounded-2xl bg-white border border-[color:var(--line)] shadow-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[color:var(--line)]">
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-lg font-black tracking-tight text-slate-900">
+              <h2 className="text-lg font-black tracking-tight text-[color:var(--fg)]">
                 Hybrid Brand Auditing Engine
               </h2>
               <span className="px-2 py-0.5 text-[10px] font-black uppercase tracking-wider bg-blue-50 text-[#2A59FE] rounded border border-blue-200">
                 Regex + LLM Smart Check
               </span>
             </div>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-[color:var(--fg-muted)] mt-1">
               Deterministic regex catches banned words instantly, while Gemini checks factual alignment and tone integrity.
             </p>
           </div>
 
           {/* Quick Preset Pills */}
           <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="text-[11px] font-semibold text-slate-400 mr-1">Samples:</span>
+            <span className="text-[11px] font-semibold text-[color:var(--fg-subtle)] mr-1">Samples:</span>
             {samplePresets.map((p, idx) => (
               <button
                 key={idx}
@@ -154,7 +154,7 @@ export default function AuditorUI({ initialText = '', brandId = 1 }: AuditorUIPr
                   setInputText(p.text);
                   setHasAudited(false);
                 }}
-                className="px-2.5 py-1 text-[11px] font-semibold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer"
+                className="px-2.5 py-1 text-[11px] font-semibold text-[color:var(--fg-muted)] hover:text-[color:var(--fg)] bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer"
               >
                 {p.title}
               </button>
@@ -168,7 +168,7 @@ export default function AuditorUI({ initialText = '', brandId = 1 }: AuditorUIPr
             <textarea
               id="brand-auditor-textarea"
               rows={6}
-              className="w-full p-4 rounded-xl text-sm text-slate-800 bg-slate-50/70 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#2A59FE]/20 focus:border-[#2A59FE] transition-all resize-y font-normal leading-relaxed"
+              className="w-full p-4 rounded-xl text-sm text-[color:var(--fg)] bg-slate-50/70 border border-[color:var(--line)] focus:outline-none focus:ring-2 focus:ring-[#2A59FE]/20 focus:border-[#2A59FE] transition-all resize-y font-normal leading-relaxed placeholder:text-[color:var(--fg-muted)]"
               placeholder="Paste your draft blog post, marketing email, or sales copy here..."
               value={inputText}
               onChange={(e) => {
@@ -179,7 +179,7 @@ export default function AuditorUI({ initialText = '', brandId = 1 }: AuditorUIPr
             <button
               type="button"
               onClick={handleCopyText}
-              className="absolute top-3 right-3 p-1.5 rounded-lg bg-white/80 hover:bg-white text-slate-500 border border-slate-200 shadow-xs text-xs flex items-center gap-1"
+              className="absolute top-3 right-3 p-1.5 rounded-lg bg-white/80 hover:bg-white text-[color:var(--fg-muted)] border border-[color:var(--line)] shadow-xs text-xs flex items-center gap-1"
               title="Copy text"
             >
               {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
@@ -187,7 +187,7 @@ export default function AuditorUI({ initialText = '', brandId = 1 }: AuditorUIPr
           </div>
 
           <div className="flex items-center justify-between">
-            <span className="text-xs text-slate-400 font-medium">
+            <span className="text-xs text-[color:var(--fg-subtle)] font-medium">
               {inputText.split(/\s+/).filter(Boolean).length} words • {inputText.length} characters
             </span>
 
@@ -221,17 +221,17 @@ export default function AuditorUI({ initialText = '', brandId = 1 }: AuditorUIPr
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 12 }}
-            className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-6"
+            className="surface-light p-6 rounded-2xl bg-white border border-[color:var(--line)] shadow-sm space-y-6"
           >
             {/* Top Stat Summary */}
-            <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-100">
+            <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-[color:var(--line)]">
               <div className="flex items-center gap-2.5">
                 <div
                   className={`w-3 h-3 rounded-full ${
                     bannedWordsFound.length > 0 ? 'bg-rose-500 animate-pulse' : 'bg-emerald-500'
                   }`}
                 />
-                <h3 className="text-sm font-black text-slate-900">
+                <h3 className="text-sm font-black text-[color:var(--fg)]">
                   {bannedWordsFound.length > 0
                     ? `${bannedWordsFound.length} Prohibited Brand Term${bannedWordsFound.length > 1 ? 's' : ''} Detected`
                     : 'Zero Prohibited Terms Found'}
@@ -260,23 +260,23 @@ export default function AuditorUI({ initialText = '', brandId = 1 }: AuditorUIPr
             {/* 1. Highlighted Text Section */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-[color:var(--fg-muted)]">
                   Your Audited Text:
                 </h4>
                 <span className="text-[11px] font-semibold text-rose-600 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">
                   Red = Banned Words (Regex)
                 </span>
               </div>
-              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/90 text-sm">
+              <div className="p-4 rounded-xl bg-slate-50 border border-[color:var(--line)] text-sm">
                 {renderHighlightedText()}
               </div>
             </div>
 
             {/* 2. AI Fact Checker Feedback Section */}
-            <div className="space-y-2 pt-2 border-t border-slate-100">
+            <div className="space-y-2 pt-2 border-t border-[color:var(--line)]">
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-[color:var(--fg)]">
                   AI Fact Checker Feedback:
                 </h4>
               </div>

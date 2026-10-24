@@ -84,7 +84,11 @@ export const OverlayTextEditor: React.FC<OverlayTextEditorProps> = ({
   const renderBackdropTokens = () => {
     if (!value) return null;
     if (!regex) {
-      return <span>{value}</span>;
+      return (
+        <span className="text-[color:var(--fg)] font-normal" style={{ color: 'var(--fg)' }}>
+          {value}
+        </span>
+      );
     }
 
     const parts = value.split(regex);
@@ -94,33 +98,43 @@ export const OverlayTextEditor: React.FC<OverlayTextEditorProps> = ({
         return (
           <span
             key={index}
-            className="bg-red-100 text-red-600 underline decoration-wavy decoration-red-500 font-semibold px-0.5 rounded-xs"
+            className="bg-red-100 text-red-700 underline decoration-wavy decoration-red-600 font-bold px-0.5 rounded-xs"
+            style={{ color: '#b91c1c' }}
           >
             {part}
           </span>
         );
       }
-      return <span key={index}>{part}</span>;
+      return (
+        <span
+          key={index}
+          className="text-[color:var(--fg)] font-normal"
+          style={{ color: 'var(--fg)' }}
+        >
+          {part}
+        </span>
+      );
     });
   };
 
-  // Shared typography and layout classes ensuring 100% alignment
+  // Shared typography and layout classes ensuring 100% alignment at 16px / line-height 1.7
   const sharedTypographyStyles =
-    'font-sans text-[15px] sm:text-[16px] leading-[28px] font-normal tracking-normal p-5 whitespace-pre-wrap break-words';
+    'font-sans text-[16px] leading-[1.7] font-normal tracking-normal p-5 whitespace-pre-wrap break-words';
 
   return (
     <div
-      className={`relative w-full ${minHeight} rounded-2xl bg-slate-50/70 dark:bg-slate-900/50 border border-[var(--border-color)] focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20 transition-all overflow-hidden ${className}`}
+      className={`relative w-full ${minHeight} rounded-2xl surface-light bg-white border border-[color:var(--line)] focus-within:border-brand-primary focus-within:ring-2 focus-within:ring-indigo-500/20 transition-all overflow-hidden ${className}`}
     >
       {/* BOTTOM LAYER: Highlighting Div */}
       <div
         ref={backdropRef}
         aria-hidden="true"
-        className={`absolute inset-0 overflow-auto pointer-events-none select-none text-[var(--text-ink)] ${sharedTypographyStyles} scrollbar-none`}
+        className={`absolute inset-0 overflow-auto pointer-events-none select-none text-[color:var(--fg)] ${sharedTypographyStyles} scrollbar-none`}
         style={{
           boxSizing: 'border-box',
           wordBreak: 'break-word',
           overflowWrap: 'break-word',
+          color: 'var(--fg)',
         }}
       >
         {renderBackdropTokens()}
@@ -140,11 +154,14 @@ export const OverlayTextEditor: React.FC<OverlayTextEditorProps> = ({
         autoComplete="off"
         autoCorrect="off"
         autoCapitalize="off"
-        className={`absolute inset-0 w-full h-full bg-transparent resize-none border-0 outline-none ${sharedTypographyStyles} text-transparent caret-indigo-600 dark:caret-indigo-400 placeholder:text-slate-400 dark:placeholder:text-slate-500 selection:bg-indigo-500/25 selection:text-transparent z-10`}
+        className={`absolute inset-0 w-full h-full bg-transparent resize-none border-0 outline-none ${sharedTypographyStyles} ${
+          value ? 'text-transparent' : 'text-[color:var(--fg)]'
+        } caret-[#4F46E5] placeholder:text-[color:var(--fg-muted)] [&::placeholder]:[-webkit-text-fill-color:var(--fg-muted)] selection:bg-indigo-500/25 z-10`}
         style={{
           boxSizing: 'border-box',
           wordBreak: 'break-word',
           overflowWrap: 'break-word',
+          caretColor: '#4F46E5',
         }}
       />
     </div>

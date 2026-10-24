@@ -1,14 +1,44 @@
 @import "tailwindcss";
 
+/* Scoped Surface Token Sets */
+.surface-light {
+  --fg: #0F1535;
+  --fg-muted: #4A5173;
+  --fg-subtle: #5F6788;
+  --line: #E4E7F2;
+  color: var(--fg);
+}
+
+.surface-dark {
+  --fg: #F4F6FF;
+  --fg-muted: #C3C9EA;
+  --fg-subtle: #A3AAD6;
+  --line: rgba(255, 255, 255, 0.12);
+  color: var(--fg);
+}
+
 :root {
-  /* Phase 1 Design Tokens */
+  /* Surface Tokens (Default Light) */
+  --fg: #0F1535;
+  --fg-muted: #4A5173;
+  --fg-subtle: #5F6788;
+  --line: #E4E7F2;
+
+  /* High-Contrast Core Design Tokens */
   --bg-page: #F7F8FC;
+  --bg-app: #F7F8FC;
   --card-bg: #FFFFFF;
-  --border-color: #E4E7F2;
+  --bg-card: #FFFFFF;
+  --border-color: #E2E8F0;
+  --border-card: #E2E8F0;
   --border-hover: #CBD5E1;
+  
+  --ink-primary: #0F1535;
+  --ink-secondary: #4A5173;
   --text-ink: #0F1535;
   --text-soft-ink: #4A5173;
-  --text-muted: #828BAA;
+  --text-muted: #5F6788;
+  --brand-primary: #4F46E5;
 
   /* Brand */
   --brand-indigo: #4F46E5;
@@ -63,13 +93,24 @@
 /* Vault Mode (Phase 4 Confidential Mode) */
 html.vault-mode,
 body.vault-mode {
+  --fg: #F4F6FF;
+  --fg-muted: #C3C9EA;
+  --fg-subtle: #A3AAD6;
+  --line: rgba(255, 255, 255, 0.12);
+
   --bg-page: #060919;
+  --bg-app: #060919;
   --card-bg: #0D132F;
-  --border-color: #1C2652;
-  --border-hover: #2F3E7C;
-  --text-ink: #F1F5F9;
-  --text-soft-ink: #94A3B8;
-  --text-muted: #64748B;
+  --bg-card: #0D132F;
+  --border-color: #1E293B;
+  --border-card: #1E293B;
+  --border-hover: #334155;
+  --ink-primary: #F8FAFC;
+  --ink-secondary: #CBD5E1;
+  --text-ink: #F8FAFC;
+  --text-soft-ink: #CBD5E1;
+  --text-muted: #94A3B8;
+  --brand-primary: #818CF8;
 
   --critical-tint: rgba(244, 63, 94, 0.12);
   --critical-text: #FB7185;
@@ -90,6 +131,80 @@ body.vault-mode {
   --info-tint: rgba(20, 184, 166, 0.14);
   --info-text: #2DD4BF;
   --info-border: rgba(20, 184, 166, 0.3);
+}
+
+/* Tailwind v4 Theme Tokens */
+@theme {
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+  --color-line: var(--line);
+  --color-ink-primary: var(--ink-primary);
+  --color-ink-secondary: var(--ink-secondary);
+  --color-brand-primary: var(--brand-primary);
+  --color-bg-app: var(--bg-app);
+  --color-bg-card: var(--bg-card);
+  --color-border-card: var(--border-card);
+  --color-text-ink: var(--text-ink);
+  --color-text-soft-ink: var(--text-soft-ink);
+  --color-text-muted: var(--text-muted);
+}
+
+/* Explicit Scoped Text Level Utility Classes */
+.text-fg,
+.text-\[color\:var\(--fg\)\] {
+  color: var(--fg) !important;
+}
+
+.text-fg-muted,
+.text-\[color\:var\(--fg-muted\)\] {
+  color: var(--fg-muted) !important;
+}
+
+.text-fg-subtle,
+.text-\[color\:var\(--fg-subtle\)\] {
+  color: var(--fg-subtle) !important;
+}
+
+.border-line,
+.border-\[color\:var\(--line\)\] {
+  border-color: var(--line) !important;
+}
+
+.text-ink-primary {
+  color: var(--ink-primary, #090D1A) !important;
+}
+
+.text-ink-secondary {
+  color: var(--ink-secondary, #1E293B) !important;
+}
+
+.text-text-ink {
+  color: var(--text-ink, #090D1A) !important;
+}
+
+.text-text-soft-ink {
+  color: var(--text-soft-ink, #1E293B) !important;
+}
+
+.text-text-muted {
+  color: var(--text-muted, #334155) !important;
+}
+
+.text-brand-primary {
+  color: var(--brand-primary, #4F46E5) !important;
+}
+
+.bg-bg-app {
+  background-color: var(--bg-app, #F8FAFC) !important;
+}
+
+.bg-bg-card {
+  background-color: var(--bg-card, #FFFFFF) !important;
+}
+
+.border-border-card {
+  border-color: var(--border-card, #E2E8F0) !important;
 }
 
 body {
@@ -126,8 +241,13 @@ body {
 
 /* Frontify Minimalist Cards */
 .frontify-card {
-  background-color: var(--card-bg);
-  border: 1px solid var(--border-color);
+  --fg: #0F1535;
+  --fg-muted: #4A5173;
+  --fg-subtle: #5F6788;
+  --line: #E4E7F2;
+  background-color: var(--card-bg, #FFFFFF);
+  border: 1px solid var(--line);
+  color: var(--fg);
   border-radius: 1.25rem;
   transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
               border-color 0.22s cubic-bezier(0.22, 1, 0.36, 1),
@@ -164,9 +284,13 @@ body {
 
 /* Dark Ink Panel (Acrolinx Compliance Contrast) */
 .dark-ink-panel {
+  --fg: #F4F6FF;
+  --fg-muted: #C3C9EA;
+  --fg-subtle: #A3AAD6;
+  --line: rgba(255, 255, 255, 0.12);
   background: linear-gradient(135deg, #0B1030 0%, #161244 50%, #1B1450 100%);
   border: 1px solid rgba(124, 58, 237, 0.25);
-  color: #FFFFFF;
+  color: var(--fg);
 }
 
 /* Conic Gradient Border for Guideline Doctor */
@@ -208,9 +332,12 @@ body {
 
 /* Aurora Gradient Text & Button */
 .aurora-text {
-  background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 50%, #EC4899 100%);
+  color: var(--brand-primary, #4F46E5);
+  background-image: linear-gradient(135deg, #4F46E5 0%, #7C3AED 50%, #EC4899 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
+  display: inline-block;
 }
 
 .aurora-button {

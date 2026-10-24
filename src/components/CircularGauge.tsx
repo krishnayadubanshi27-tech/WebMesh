@@ -142,10 +142,10 @@ export const CircularGauge: React.FC<CircularGaugeProps> = ({
             >
               {score}
             </span>
-            <span className="text-xl font-bold text-white/50 ml-1">%</span>
+            <span className="text-xl font-bold text-white/85 ml-1">%</span>
           </motion.div>
 
-          <span className="text-[11px] font-bold tracking-wider uppercase text-white/70 mt-1">
+          <span className="text-xs font-black tracking-wider uppercase text-white/95 mt-1">
             Brand Trust Score
           </span>
 
@@ -220,7 +220,7 @@ export const CircularGauge: React.FC<CircularGaugeProps> = ({
                     {sub.score}%
                   </span>
                 </div>
-                <span className="text-[10px] font-semibold text-white/70 leading-tight">
+                <span className="text-[10px] font-bold text-white/90 leading-tight">
                   {sub.label}
                 </span>
               </div>

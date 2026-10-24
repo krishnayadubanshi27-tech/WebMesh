@@ -169,16 +169,16 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
   return (
     <div className="space-y-6">
       {/* Top Header Card */}
-      <div className="frontify-card p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="surface-light frontify-card p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 text-xs font-bold text-brand-primary uppercase tracking-wider">
             <Columns3 className="w-4 h-4 text-brand-primary" />
             <span>Multi-Stage Governance Pipeline</span>
           </div>
-          <h1 className="text-2xl font-black text-ink-primary tracking-tight mt-0.5">
+          <h1 className="text-2xl font-black text-[color:var(--fg)] tracking-tight mt-0.5">
             Approval <span className="aurora-text">Hub</span>
           </h1>
-          <p className="text-xs text-ink-secondary">
+          <p className="text-xs text-[color:var(--fg-muted)] font-medium">
             Kanban workflow routing: automated fast-track clearances, manager diff reviews, and legal revision loops.
           </p>
         </div>
@@ -186,17 +186,17 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
         {/* Filters & Search */}
         <div className="flex flex-wrap items-center gap-3">
           <div className="relative">
-            <Search className="w-4 h-4 text-ink-secondary/60 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <Search className="w-4 h-4 text-[color:var(--fg-subtle)] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               placeholder="Search submissions..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-8 pr-3 py-1.5 text-xs bg-bg-app border border-border-card rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary w-48 text-ink-primary transition-all"
+              className="pl-8 pr-3 py-1.5 text-xs bg-white border border-[color:var(--line)] rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary w-48 text-[color:var(--fg)] placeholder:text-[color:var(--fg-muted)] font-medium transition-all"
             />
           </div>
 
-          <div className="flex items-center gap-1 bg-bg-app p-1 rounded-xl text-xs font-semibold border border-border-card">
+          <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-semibold border border-[color:var(--line)]">
             {['All', 'Demand Gen', 'Sales Enablement', 'Product Marketing', 'Executive Comms'].map(
               (dept) => (
                 <button
@@ -204,8 +204,8 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
                   onClick={() => setSelectedDepartment(dept)}
                   className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer ${
                     selectedDepartment === dept
-                      ? 'bg-bg-card text-ink-primary font-bold shadow-xs border border-border-card/60'
-                      : 'text-ink-secondary hover:text-ink-primary'
+                      ? 'bg-white text-[color:var(--fg)] font-bold shadow-xs border border-[color:var(--line)]'
+                      : 'text-[color:var(--fg-muted)] hover:text-[color:var(--fg)] font-semibold'
                   }`}
                 >
                   {dept === 'All' ? 'All Teams' : dept.split(' ')[0]}
@@ -214,8 +214,8 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
             )}
           </div>
           {/* Supabase Live Connection & Sync Button */}
-          <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/25 text-emerald-800 dark:text-emerald-300 px-3 py-1.5 rounded-xl text-xs font-bold shadow-2xs">
-            <Database className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+          <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/25 text-emerald-950 px-3 py-1.5 rounded-xl text-xs font-bold shadow-2xs">
+            <Database className="w-3.5 h-3.5 text-emerald-600" />
             <span>Supabase: {isFetchingSupabase ? 'Syncing...' : `${supabaseSyncedCount || fastTrackCards.length + reviewCards.length} Submissions`}</span>
             <button
               type="button"
@@ -231,14 +231,14 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
       </div>
 
       {/* Smart Routing & Draggable Kanban Hint Banner */}
-      <div className="bg-gradient-to-r from-indigo-50/70 via-purple-50/50 to-blue-50/60 dark:from-indigo-950/20 dark:via-purple-950/15 dark:to-blue-950/20 border border-indigo-200/60 dark:border-indigo-900/40 rounded-2xl px-4 py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-indigo-950 dark:text-indigo-200">
+      <div className="surface-light bg-indigo-50/70 border border-indigo-200/60 rounded-2xl px-4 py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-indigo-950">
         <div className="flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
+          <Sparkles className="w-4 h-4 text-indigo-600 shrink-0" />
           <span>
             <strong>Smart Routing Active:</strong> Submissions with score &ge; 90% map to <em>Fast-Track Approved</em>. Score &lt; 90% maps to <em>Manager Review Queue</em>.
           </span>
         </div>
-        <div className="flex items-center gap-2 text-[11px] font-semibold text-indigo-700 dark:text-indigo-300">
+        <div className="flex items-center gap-2 text-[11px] font-semibold text-indigo-800">
           <GripVertical className="w-3.5 h-3.5 opacity-60" />
           <span>Cards are draggable horizontally across columns</span>
         </div>
@@ -249,23 +249,24 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
       <div className="flex md:grid md:grid-cols-3 overflow-x-auto snap-x snap-mandatory pb-4 md:pb-0 gap-6 items-start scrollbar-none">
         
         {/* COLUMN 1: Fast-Track Approved (Emerald Tint) */}
-        <div className="min-w-[320px] md:min-w-0 snap-center flex flex-col bg-emerald-500/[0.03] p-4.5 rounded-3xl border border-emerald-500/20 shadow-xs space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-emerald-500/15">
+        {/* COLUMN 1: Fast-Track Approved (Emerald Tint) */}
+        <div className="surface-light min-w-[320px] md:min-w-0 snap-center flex flex-col bg-emerald-500/[0.04] p-4.5 rounded-3xl border border-emerald-500/25 shadow-xs space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-emerald-500/20">
             <div className="flex items-center gap-2">
               <span className="relative flex h-2.5 w-2.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
               </span>
-              <h2 className="text-xs font-black uppercase tracking-wider text-emerald-900 dark:text-emerald-300">
+              <h2 className="text-xs font-black uppercase tracking-wider text-emerald-950">
                 Fast-Track Approved
               </h2>
             </div>
-            <span className="text-xs font-black px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/25">
+            <span className="text-xs font-black px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-800 border border-emerald-500/25">
               {fastTrackCards.length}
             </span>
           </div>
 
-          <p className="text-[11px] text-ink-secondary leading-relaxed">
+          <p className="text-[11px] text-[color:var(--fg-muted)] font-medium leading-relaxed">
             Auto-approved assets with Trust Score &ge; 90%. Cleared for immediate multi-channel distribution.
           </p>
 
@@ -279,8 +280,8 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
                   className="border-2 border-dashed border-emerald-500/25 rounded-2xl p-8 flex flex-col items-center justify-center text-center space-y-2 bg-emerald-500/[0.02]"
                 >
                   <Sparkles className="w-8 h-8 text-emerald-500/50 animate-pulse" />
-                  <p className="text-xs font-bold text-ink-primary">No Fast-Track Assets</p>
-                  <p className="text-[11px] text-ink-secondary max-w-[220px]">
+                  <p className="text-xs font-black text-[color:var(--fg)]">No Fast-Track Assets</p>
+                  <p className="text-[11px] text-[color:var(--fg-muted)] font-medium max-w-[220px]">
                     Submissions scoring &ge; 90% automatically bypass review queues and land here.
                   </p>
                 </motion.div>
@@ -313,14 +314,14 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
                       exit={{ opacity: 0, scale: 0.95 }}
                       whileHover={{ y: -4, rotate: 0.5, transition: springTransition }}
                       transition={springTransition}
-                      className="p-4 rounded-2xl bg-bg-card border border-emerald-500/20 shadow-xs hover:shadow-md transition-shadow space-y-3 relative group cursor-grab active:cursor-grabbing"
+                      className="surface-light p-4 rounded-2xl bg-white border border-emerald-500/25 shadow-xs hover:shadow-md transition-shadow space-y-3 relative group cursor-grab active:cursor-grabbing"
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex items-center gap-1.5">
                           <span title="Drag card horizontally to route across columns" className="inline-flex items-center">
-                            <GripVertical className="w-3.5 h-3.5 text-ink-secondary/35 group-hover:text-ink-secondary/70 shrink-0 transition-colors" />
+                            <GripVertical className="w-3.5 h-3.5 text-[color:var(--fg-subtle)] group-hover:text-[color:var(--fg)] shrink-0 transition-colors" />
                           </span>
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-ink-secondary bg-bg-app px-2 py-0.5 rounded border border-border-card">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-[color:var(--fg-muted)] bg-slate-100 px-2 py-0.5 rounded border border-[color:var(--line)]">
                             {card.assetType}
                           </span>
                         </div>
@@ -339,15 +340,15 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
                         </span>
                       </div>
 
-                      <h3 className="text-xs font-bold text-ink-primary leading-snug">
+                      <h3 className="text-xs font-black text-[color:var(--fg)] leading-snug">
                         {card.title}
                       </h3>
 
-                      <div className="p-2.5 rounded-xl bg-emerald-500/[0.04] border border-emerald-500/15 text-[11px] text-ink-primary line-clamp-2 italic">
+                      <div className="p-2.5 rounded-xl bg-emerald-500/[0.06] border border-emerald-500/20 text-[11px] text-[color:var(--fg)] font-medium line-clamp-2 italic">
                         &quot;{card.afterText}&quot;
                       </div>
 
-                      <div className="flex items-center justify-between pt-2 border-t border-border-card text-[11px]">
+                      <div className="flex items-center justify-between pt-2 border-t border-[color:var(--line)] text-[11px]">
                         <div className="flex items-center gap-2">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
@@ -355,19 +356,19 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
                             alt={card.author.name}
                             className="w-5 h-5 rounded-full object-cover ring-1 ring-border-card"
                           />
-                          <span className="text-ink-secondary font-medium">{card.author.name}</span>
+                          <span className="text-[color:var(--fg)] font-bold">{card.author.name}</span>
                         </div>
-                        <span className="text-[10px] text-ink-secondary/70">{card.timestamp}</span>
+                        <span className="text-[10px] text-[color:var(--fg-muted)] font-semibold">{card.timestamp}</span>
                       </div>
 
                       <div className="flex items-center justify-between pt-1">
-                        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                           Ready to Publish
                         </span>
                         <button
                           onClick={() => handleMoveToReview(card.id)}
-                          className="text-[10px] font-semibold text-ink-secondary hover:text-ink-primary cursor-pointer hover:underline"
+                          className="text-[10px] font-bold text-[color:var(--fg-muted)] hover:text-[color:var(--fg)] cursor-pointer hover:underline"
                         >
                           Re-evaluate
                         </button>
@@ -381,23 +382,23 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
         </div>
 
         {/* COLUMN 2: Manager Review Queue (Amber Tint with Before | After | Diff sliding toggle) */}
-        <div className="min-w-[320px] md:min-w-0 snap-center flex flex-col bg-amber-500/[0.03] p-4.5 rounded-3xl border border-amber-500/20 shadow-xs space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-amber-500/15">
+        <div className="surface-light min-w-[320px] md:min-w-0 snap-center flex flex-col bg-amber-500/[0.04] p-4.5 rounded-3xl border border-amber-500/25 shadow-xs space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-amber-500/20">
             <div className="flex items-center gap-2">
               <span className="relative flex h-2.5 w-2.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500" />
               </span>
-              <h2 className="text-xs font-black uppercase tracking-wider text-amber-900 dark:text-amber-300">
+              <h2 className="text-xs font-black uppercase tracking-wider text-amber-950">
                 Manager Review Queue
               </h2>
             </div>
-            <span className="text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/25">
+            <span className="text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-800 border border-amber-500/25">
               {reviewCards.length}
             </span>
           </div>
 
-          <p className="text-[11px] text-ink-secondary leading-relaxed">
+          <p className="text-[11px] text-[color:var(--fg-muted)] font-medium leading-relaxed">
             Assets with unhedged claims or tone deviation requiring human sign-off before distribution.
           </p>
 
@@ -411,8 +412,8 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
                   className="border-2 border-dashed border-amber-500/25 rounded-2xl p-8 flex flex-col items-center justify-center text-center space-y-2 bg-amber-500/[0.02]"
                 >
                   <FileCheck className="w-8 h-8 text-amber-500/50" />
-                  <p className="text-xs font-bold text-ink-primary">Queue Completely Clear</p>
-                  <p className="text-[11px] text-ink-secondary max-w-[220px]">
+                  <p className="text-xs font-black text-[color:var(--fg)]">Queue Completely Clear</p>
+                  <p className="text-[11px] text-[color:var(--fg-muted)] font-medium max-w-[220px]">
                     No submissions currently awaiting manager approval. All clear!
                   </p>
                 </motion.div>
@@ -455,7 +456,7 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
                       exit={{ opacity: 0, scale: 0.95 }}
                       whileHover={{ y: -4, rotate: 0.5, transition: springTransition }}
                       transition={springTransition}
-                      className="p-4 rounded-2xl bg-bg-card border border-amber-500/25 shadow-xs hover:shadow-md transition-shadow space-y-3.5 relative overflow-hidden cursor-grab active:cursor-grabbing"
+                      className="surface-light p-4 rounded-2xl bg-white border border-amber-500/30 shadow-xs hover:shadow-md transition-shadow space-y-3.5 relative overflow-hidden cursor-grab active:cursor-grabbing"
                     >
                       {/* Check burst overlay during approval */}
                       <AnimatePresence>
@@ -485,14 +486,14 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex flex-wrap items-center gap-1.5">
                           <span title="Drag left to Approve, drag right to Request Changes" className="inline-flex items-center">
-                            <GripVertical className="w-3.5 h-3.5 text-ink-secondary/35 hover:text-ink-secondary/70 shrink-0 transition-colors" />
+                            <GripVertical className="w-3.5 h-3.5 text-[color:var(--fg-subtle)] hover:text-[color:var(--fg)] shrink-0 transition-colors" />
                           </span>
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-ink-secondary bg-bg-app px-2 py-0.5 rounded border border-border-card">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-[color:var(--fg-muted)] bg-slate-100 px-2 py-0.5 rounded border border-[color:var(--line)]">
                             {card.assetType}
                           </span>
 
 
-                          <span className="text-[10px] font-medium text-ink-secondary">
+                          <span className="text-[10px] font-bold text-[color:var(--fg-muted)]">
                             • {card.department.split(' ')[0]}
                           </span>
                         </div>
@@ -511,31 +512,31 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
                             {card.score}%
                           </span>
 
-                          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-700 dark:text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">
-                            <Clock className="w-3 h-3 text-amber-500" />
+                          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-800 bg-amber-500/15 px-2 py-0.5 rounded-full border border-amber-500/25">
+                            <Clock className="w-3 h-3 text-amber-600" />
                             2h 45m SLA
                           </span>
                         </div>
                       </div>
 
-                      <h3 className="text-xs font-bold text-ink-primary leading-snug">
+                      <h3 className="text-xs font-black text-[color:var(--fg)] leading-snug">
                         {card.title}
                       </h3>
 
                       {/* Before | After | Diff Segmented Control with Sliding Thumb */}
-                      <div className="p-3 rounded-2xl bg-bg-app border border-border-card space-y-2.5 text-[11px]">
-                        <div className="flex items-center justify-between border-b border-border-card pb-2">
-                          <span className="flex items-center gap-1 font-bold text-[10px] uppercase tracking-wider text-ink-secondary">
+                      <div className="p-3 rounded-2xl bg-slate-50 border border-[color:var(--line)] space-y-2.5 text-[11px]">
+                        <div className="flex items-center justify-between border-b border-[color:var(--line)] pb-2">
+                          <span className="flex items-center gap-1 font-black text-[10px] uppercase tracking-wider text-[color:var(--fg)]">
                             <GitCompare className="w-3 h-3 text-brand-primary" />
                             Inspection View
                           </span>
-                          <span className="text-rose-500 font-black text-[10px] bg-rose-500/10 px-2 py-0.2 rounded border border-rose-500/20">
+                          <span className="text-rose-600 font-black text-[10px] bg-rose-500/10 px-2 py-0.2 rounded border border-rose-500/20">
                             {card.criticalViolations} Flags
                           </span>
                         </div>
 
                         {/* Sliding Thumb Segmented Button */}
-                        <div className="relative flex items-center bg-bg-card p-1 rounded-xl border border-border-card text-[11px] font-bold">
+                        <div className="relative flex items-center bg-white p-1 rounded-xl border border-[color:var(--line)] text-[11px] font-bold">
                           {(['diff', 'before', 'after'] as const).map((viewKey) => {
                             const isActive = currentView === viewKey;
                             return (
@@ -545,7 +546,7 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
                                   setDiffViews((prev) => ({ ...prev, [card.id]: viewKey }))
                                 }
                                 className={`relative flex-1 py-1 text-center capitalize transition-colors z-10 cursor-pointer ${
-                                  isActive ? 'text-ink-primary font-black' : 'text-ink-secondary hover:text-ink-primary'
+                                  isActive ? 'text-[color:var(--fg)] font-black' : 'text-[color:var(--fg-muted)] hover:text-[color:var(--fg)] font-bold'
                                 }`}
                               >
                                 {isActive && (
@@ -567,10 +568,10 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
                         <div className="min-h-[72px] flex flex-col justify-center">
                           {currentView === 'before' && (
                             <div className="space-y-1">
-                              <span className="text-[10px] font-bold uppercase text-rose-600 bg-rose-500/10 px-1.5 py-0.2 rounded border border-rose-500/20">
+                              <span className="text-[10px] font-black uppercase text-rose-800 bg-rose-500/15 px-1.5 py-0.2 rounded border border-rose-500/25">
                                 Original Draft Copy:
                               </span>
-                              <p className="text-rose-900 dark:text-rose-300 line-through decoration-rose-500 bg-rose-500/[0.05] p-2 rounded-lg border border-rose-500/15 leading-relaxed">
+                              <p className="text-rose-950 font-medium line-through decoration-rose-500 bg-rose-50 p-2 rounded-lg border border-rose-200 leading-relaxed">
                                 {card.beforeText}
                               </p>
                             </div>
@@ -578,10 +579,10 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
 
                           {currentView === 'after' && (
                             <div className="space-y-1">
-                              <span className="text-[10px] font-bold uppercase text-emerald-600 bg-emerald-500/10 px-1.5 py-0.2 rounded border border-emerald-500/20">
+                              <span className="text-[10px] font-black uppercase text-emerald-800 bg-emerald-500/15 px-1.5 py-0.2 rounded border border-emerald-500/25">
                                 Proposed Compliant Copy:
                               </span>
-                              <p className="text-emerald-900 dark:text-emerald-300 font-medium bg-emerald-500/[0.05] p-2 rounded-lg border border-emerald-500/15 leading-relaxed">
+                              <p className="text-emerald-950 font-bold bg-emerald-50 p-2 rounded-lg border border-emerald-200 leading-relaxed">
                                 {card.afterText}
                               </p>
                             </div>
@@ -589,10 +590,10 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
 
                           {currentView === 'diff' && (
                             <div className="space-y-2">
-                              <p className="text-ink-secondary text-[11px] line-through decoration-rose-400 bg-rose-500/[0.04] p-1.5 rounded-lg border border-rose-500/15">
+                              <p className="text-rose-950 font-medium text-[11px] line-through decoration-rose-500 bg-rose-50 p-2 rounded-lg border border-rose-200">
                                 {card.beforeText}
                               </p>
-                              <p className="text-ink-primary font-medium bg-emerald-500/[0.04] p-1.5 rounded-lg border border-emerald-500/15">
+                              <p className="text-emerald-950 font-bold text-[11px] bg-emerald-50 p-2 rounded-lg border border-emerald-200">
                                 {card.afterText}
                               </p>
                               {card.diffSummary && (
@@ -600,7 +601,7 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
                                   {card.diffSummary.removed.map((r, i) => (
                                     <span
                                       key={i}
-                                      className="text-[10px] line-through bg-rose-500/15 text-rose-700 dark:text-rose-300 px-1.5 py-0.2 rounded border border-rose-500/20"
+                                      className="text-[10px] font-bold line-through bg-rose-100 text-rose-900 px-1.5 py-0.2 rounded border border-rose-300"
                                     >
                                       -{r}
                                     </span>
@@ -608,7 +609,7 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
                                   {card.diffSummary.added.map((a, i) => (
                                     <span
                                       key={i}
-                                      className="text-[10px] font-bold bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 px-1.5 py-0.2 rounded border border-emerald-500/20"
+                                      className="text-[10px] font-black bg-emerald-100 text-emerald-900 px-1.5 py-0.2 rounded border border-emerald-300"
                                     >
                                       +{a}
                                     </span>
@@ -621,7 +622,7 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
                       </div>
 
                       {/* Author Meta */}
-                      <div className="flex items-center justify-between text-[11px] text-ink-secondary pt-1 border-t border-border-card">
+                      <div className="flex items-center justify-between text-[11px] text-[color:var(--fg-muted)] pt-1 border-t border-[color:var(--line)]">
                         <div className="flex items-center gap-2">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
@@ -629,9 +630,9 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
                             alt={card.author.name}
                             className="w-5 h-5 rounded-full object-cover ring-1 ring-border-card"
                           />
-                          <span className="font-medium text-ink-primary">{card.author.name}</span>
+                          <span className="font-bold text-[color:var(--fg)]">{card.author.name}</span>
                         </div>
-                        <span className="text-[10px] text-ink-secondary/70">{card.timestamp}</span>
+                        <span className="text-[10px] text-[color:var(--fg-muted)] font-semibold">{card.timestamp}</span>
                       </div>
 
                       {/* Action Buttons: Reject & Approve */}
@@ -639,7 +640,7 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
                         <button
                           id={`reject-btn-${card.id}`}
                           onClick={() => triggerReject(card)}
-                          className="py-2 px-3 text-xs font-bold text-rose-600 dark:text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/25 rounded-xl flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95"
+                          className="py-2 px-3 text-xs font-bold text-rose-700 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/25 rounded-xl flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95"
                         >
                           <X className="w-3.5 h-3.5" />
                           <span>Reject</span>
@@ -663,22 +664,22 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
         </div>
 
         {/* COLUMN 3: Changes Requested (Rose Tint) */}
-        <div className="min-w-[320px] md:min-w-0 snap-center flex flex-col bg-rose-500/[0.03] p-4.5 rounded-3xl border border-rose-500/20 shadow-xs space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-rose-500/15">
+        <div className="surface-light min-w-[320px] md:min-w-0 snap-center flex flex-col bg-rose-500/[0.04] p-4.5 rounded-3xl border border-rose-500/25 shadow-xs space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-rose-500/20">
             <div className="flex items-center gap-2">
               <span className="relative flex h-2.5 w-2.5">
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500" />
               </span>
-              <h2 className="text-xs font-black uppercase tracking-wider text-rose-900 dark:text-rose-300">
+              <h2 className="text-xs font-black uppercase tracking-wider text-rose-950">
                 Changes Requested
               </h2>
             </div>
-            <span className="text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/25">
+            <span className="text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-800 border border-rose-500/25">
               {changesCards.length}
             </span>
           </div>
 
-          <p className="text-[11px] text-ink-secondary leading-relaxed">
+          <p className="text-[11px] text-[color:var(--fg-muted)] font-medium leading-relaxed">
             Assets returned to author for claim qualification or terminology rewrite before re-submission.
           </p>
 
@@ -692,8 +693,8 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
                   className="border-2 border-dashed border-rose-500/25 rounded-2xl p-8 flex flex-col items-center justify-center text-center space-y-2 bg-rose-500/[0.02]"
                 >
                   <ShieldCheck className="w-8 h-8 text-rose-500/50" />
-                  <p className="text-xs font-bold text-ink-primary">Zero Open Change Loops</p>
-                  <p className="text-[11px] text-ink-secondary max-w-[220px]">
+                  <p className="text-xs font-black text-[color:var(--fg)]">Zero Open Change Loops</p>
+                  <p className="text-[11px] text-[color:var(--fg-muted)] font-medium max-w-[220px]">
                     No assets have active legal or brand revisions pending.
                   </p>
                 </motion.div>
@@ -726,14 +727,14 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
                       exit={{ opacity: 0, scale: 0.95 }}
                       whileHover={{ y: -4, rotate: 0.5, transition: springTransition }}
                       transition={springTransition}
-                      className="p-4 rounded-2xl bg-bg-card border border-rose-500/25 shadow-xs hover:shadow-md transition-shadow space-y-3 cursor-grab active:cursor-grabbing"
+                      className="surface-light p-4 rounded-2xl bg-white border border-rose-500/30 shadow-xs hover:shadow-md transition-shadow space-y-3 cursor-grab active:cursor-grabbing"
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex items-center gap-1.5">
                           <span title="Drag left to Re-open for Manager Review" className="inline-flex items-center">
-                            <GripVertical className="w-3.5 h-3.5 text-ink-secondary/35 hover:text-ink-secondary/70 shrink-0 transition-colors" />
+                            <GripVertical className="w-3.5 h-3.5 text-[color:var(--fg-subtle)] hover:text-[color:var(--fg)] shrink-0 transition-colors" />
                           </span>
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-ink-secondary bg-bg-app px-2 py-0.5 rounded border border-border-card">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-[color:var(--fg-muted)] bg-slate-100 px-2 py-0.5 rounded border border-[color:var(--line)]">
                             {card.assetType}
                           </span>
                         </div>
@@ -752,21 +753,21 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
                         </span>
                       </div>
 
-                      <h3 className="text-xs font-bold text-ink-primary leading-snug">
+                      <h3 className="text-xs font-black text-[color:var(--fg)] leading-snug">
                         {card.title}
                       </h3>
 
                       {card.notes && (
-                        <div className="p-2.5 rounded-xl bg-rose-500/[0.06] border border-rose-500/20 text-[11px] text-rose-800 dark:text-rose-300 space-y-1">
-                          <span className="font-black flex items-center gap-1 text-[10px] uppercase text-rose-600 dark:text-rose-400">
-                            <AlertCircle className="w-3.5 h-3.5 text-rose-500" />
+                        <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-[11px] text-rose-950 space-y-1">
+                          <span className="font-black flex items-center gap-1 text-[10px] uppercase text-rose-800">
+                            <AlertCircle className="w-3.5 h-3.5 text-rose-600" />
                             Reviewer Feedback:
                           </span>
-                          <p className="leading-relaxed">{card.notes}</p>
+                          <p className="leading-relaxed font-medium">{card.notes}</p>
                         </div>
                       )}
 
-                      <div className="flex items-center justify-between pt-2 border-t border-border-card text-[11px]">
+                      <div className="flex items-center justify-between pt-2 border-t border-[color:var(--line)] text-[11px]">
                         <div className="flex items-center gap-2">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
@@ -774,14 +775,14 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
                             alt={card.author.name}
                             className="w-5 h-5 rounded-full object-cover ring-1 ring-border-card"
                           />
-                          <span className="text-ink-secondary font-medium">{card.author.name}</span>
+                          <span className="text-[color:var(--fg)] font-bold">{card.author.name}</span>
                         </div>
-                        <span className="text-[10px] text-ink-secondary/70">{card.timestamp}</span>
+                        <span className="text-[10px] text-[color:var(--fg-muted)] font-semibold">{card.timestamp}</span>
                       </div>
 
                       <button
                         onClick={() => handleMoveToReview(card.id)}
-                        className="w-full py-2 px-3 text-xs font-bold text-ink-primary bg-bg-app hover:bg-border-card/40 border border-border-card rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 active:scale-95"
+                        className="w-full py-2 px-3 text-xs font-black text-[color:var(--fg)] bg-white hover:bg-slate-100 border border-[color:var(--line)] rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 active:scale-95 shadow-xs"
                       >
                         <RotateCcw className="w-3.5 h-3.5 text-brand-primary" />
                         <span>Re-open for Manager Review</span>
@@ -804,7 +805,7 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 16 }}
               transition={springTransition}
-              className="w-full max-w-md bg-bg-card border border-border-card rounded-3xl p-6 shadow-2xl space-y-4"
+              className="surface-light w-full max-w-md bg-white border border-[color:var(--line)] rounded-3xl p-6 shadow-2xl space-y-4"
             >
               <div className="flex items-start justify-between">
                 <div>
@@ -812,16 +813,16 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
                     <AlertCircle className="w-4 h-4" />
                     <span>Request Changes</span>
                   </div>
-                  <h3 className="text-base font-black text-ink-primary mt-1">
+                  <h3 className="text-base font-black text-[color:var(--fg)] mt-1">
                     Specify Rejection Rationale
                   </h3>
-                  <p className="text-xs text-ink-secondary">
+                  <p className="text-xs text-[color:var(--fg-muted)] font-medium">
                     Provide precise instructions to {rejectModalCard.author.name} before returning.
                   </p>
                 </div>
                 <button
                   onClick={() => setRejectModalCard(null)}
-                  className="p-1.5 rounded-lg text-ink-secondary hover:text-ink-primary hover:bg-bg-app cursor-pointer"
+                  className="p-1.5 rounded-lg text-[color:var(--fg-muted)] hover:text-[color:var(--fg)] hover:bg-slate-100 cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -829,7 +830,7 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
 
               {/* Pre-canned Reason Options */}
               <div className="space-y-2">
-                <label className="text-[11px] font-bold text-ink-secondary uppercase">
+                <label className="text-[11px] font-black text-[color:var(--fg)] uppercase">
                   Select Primary Policy Reason
                 </label>
                 {[
@@ -842,10 +843,10 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
                     key={reason}
                     type="button"
                     onClick={() => setSelectedRejectReason(reason)}
-                    className={`w-full text-left p-2.5 rounded-xl border text-xs font-medium transition-all cursor-pointer ${
+                    className={`w-full text-left p-2.5 rounded-xl border text-xs transition-all cursor-pointer ${
                       selectedRejectReason === reason
-                        ? 'bg-rose-500/10 border-rose-500/40 text-rose-800 dark:text-rose-300 font-bold'
-                        : 'bg-bg-app border-border-card text-ink-secondary hover:text-ink-primary'
+                        ? 'bg-rose-500/10 border-rose-500/40 text-rose-950 font-black'
+                        : 'bg-white border-[color:var(--line)] text-[color:var(--fg)] hover:text-[color:var(--fg)] hover:bg-slate-50 font-semibold'
                     }`}
                   >
                     {reason}
@@ -855,7 +856,7 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
 
               {/* Optional Custom Note */}
               <div className="space-y-1">
-                <label className="text-[11px] font-bold text-ink-secondary uppercase">
+                <label className="text-[11px] font-black text-[color:var(--fg)] uppercase">
                   Add Contextual Directives (Optional)
                 </label>
                 <textarea
@@ -863,15 +864,15 @@ export const ApprovalHubTab: React.FC<ApprovalHubTabProps> = ({
                   value={customRejectNote}
                   onChange={(e) => setCustomRejectNote(e.target.value)}
                   placeholder="e.g. Please replace 'guarantee' with SLA commitment and route through Legal counsel..."
-                  className="w-full text-xs p-3 bg-bg-app border border-border-card rounded-xl text-ink-primary placeholder:text-ink-secondary/50 focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+                  className="w-full text-xs p-3 bg-white border border-[color:var(--line)] rounded-xl text-[color:var(--fg)] placeholder:text-[color:var(--fg-muted)] font-medium focus:outline-none focus:ring-2 focus:ring-rose-500/30"
                 />
               </div>
 
               {/* Modal Buttons */}
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-border-card">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[color:var(--line)]">
                 <button
                   onClick={() => setRejectModalCard(null)}
-                  className="px-4 py-2 text-xs font-bold text-ink-secondary hover:text-ink-primary cursor-pointer"
+                  className="px-4 py-2 text-xs font-bold text-[color:var(--fg-muted)] hover:text-[color:var(--fg)] cursor-pointer"
                 >
                   Cancel
                 </button>

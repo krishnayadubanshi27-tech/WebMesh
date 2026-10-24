@@ -308,7 +308,7 @@ export const StudioTab: React.FC<StudioTabProps> = ({
   const renderHighlightedText = () => {
     if (hasAppliedFix || detectedIssues.length === 0) {
       return (
-        <span className="text-[var(--text-ink)] leading-relaxed font-normal whitespace-pre-wrap">
+        <span className="text-[color:var(--fg)] leading-[1.7] font-normal whitespace-pre-wrap">
           {content}
         </span>
       );
@@ -316,7 +316,7 @@ export const StudioTab: React.FC<StudioTabProps> = ({
 
     const wordsToHighlight = detectedIssues.map((i) => i.word).filter(Boolean);
     if (wordsToHighlight.length === 0) {
-      return <span className="whitespace-pre-wrap">{content}</span>;
+      return <span className="text-[color:var(--fg)] leading-[1.7] whitespace-pre-wrap">{content}</span>;
     }
 
     const pattern = new RegExp(
@@ -326,7 +326,7 @@ export const StudioTab: React.FC<StudioTabProps> = ({
     const parts = content.split(pattern);
 
     return (
-      <span className="whitespace-pre-wrap leading-loose">
+      <span className="whitespace-pre-wrap leading-[1.7]">
         {parts.map((part, index) => {
           const matchingIssue = detectedIssues.find(
             (i) => i.word.toLowerCase() === part.toLowerCase()
@@ -340,8 +340,8 @@ export const StudioTab: React.FC<StudioTabProps> = ({
                 onClick={() => setActiveTooltipIssue(matchingIssue)}
                 className={`inline-block px-1 py-0.5 mx-0.5 rounded cursor-pointer transition-all font-semibold ${
                   isDeterministic
-                    ? 'underline decoration-rose-500 decoration-wavy underline-offset-4 bg-rose-500/10 text-rose-900 dark:text-rose-300 hover:bg-rose-500/20'
-                    : 'underline decoration-violet-500 decoration-dashed underline-offset-4 bg-violet-500/10 text-violet-900 dark:text-violet-300 hover:bg-violet-500/20'
+                    ? 'underline decoration-rose-500 decoration-wavy underline-offset-4 bg-rose-500/10 text-rose-900 hover:bg-rose-500/20'
+                    : 'underline decoration-violet-500 decoration-dashed underline-offset-4 bg-violet-500/10 text-violet-900 hover:bg-violet-500/20'
                 }`}
                 title={`Click to inspect ${matchingIssue.ruleName}`}
               >
@@ -350,7 +350,11 @@ export const StudioTab: React.FC<StudioTabProps> = ({
             );
           }
 
-          return <span key={index}>{part}</span>;
+          return (
+            <span key={index} className="text-[color:var(--fg)] font-normal">
+              {part}
+            </span>
+          );
         })}
       </span>
     );
@@ -359,16 +363,17 @@ export const StudioTab: React.FC<StudioTabProps> = ({
   return (
     <div className="space-y-6">
       {/* Studio Header & Mode Switcher */}
-      <div className="frontify-card p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      {/* Studio Header & Mode Switcher */}
+      <div className="surface-light frontify-card p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 text-xs font-bold text-indigo-600 uppercase tracking-wider">
             <Zap className="w-4 h-4" />
             <span>Real-Time Compliance Studio</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-[var(--text-ink)] tracking-tight mt-1">
-            Co-Pilot Studio
+          <h1 className="text-2xl sm:text-3xl font-black text-[color:var(--fg)] tracking-tight mt-1">
+            Co-Pilot <span className="aurora-text">Studio</span>
           </h1>
-          <p className="text-xs sm:text-sm text-[var(--text-soft-ink)] mt-0.5">
+          <p className="text-xs sm:text-sm text-[color:var(--fg-muted)] font-medium mt-0.5">
             Wavy & dashed inline rule scanning, intent-aware AI rewriting, and Acrolinx Trust Scorecards.
           </p>
         </div>
@@ -381,8 +386,8 @@ export const StudioTab: React.FC<StudioTabProps> = ({
               onClick={() => setActiveStudioMode('copilot')}
               className={`px-3.5 py-1.5 rounded-xl transition-all cursor-pointer ${
                 activeStudioMode === 'copilot'
-                  ? 'bg-white dark:bg-slate-900 text-[var(--text-ink)] shadow-xs font-bold'
-                  : 'text-[var(--text-soft-ink)] hover:text-[var(--text-ink)]'
+                  ? 'bg-white dark:bg-slate-900 text-[color:var(--fg)] shadow-xs font-black'
+                  : 'text-[color:var(--fg-muted)] hover:text-[color:var(--fg)] font-bold'
               }`}
             >
               Co-Pilot Studio
@@ -392,8 +397,8 @@ export const StudioTab: React.FC<StudioTabProps> = ({
               onClick={() => setActiveStudioMode('auditor')}
               className={`px-3.5 py-1.5 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
                 activeStudioMode === 'auditor'
-                  ? 'bg-indigo-600 text-white shadow-xs font-bold'
-                  : 'text-[var(--text-soft-ink)] hover:text-[var(--text-ink)]'
+                  ? 'bg-indigo-600 text-white shadow-xs font-black'
+                  : 'text-[color:var(--fg-muted)] hover:text-[color:var(--fg)] font-bold'
               }`}
             >
               <Sparkles className="w-3.5 h-3.5" />
@@ -407,10 +412,10 @@ export const StudioTab: React.FC<StudioTabProps> = ({
                 <button
                   key={p.id}
                   onClick={() => handleSelectPreset(p.id)}
-                  className={`px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                     selectedPresetId === p.id
-                      ? 'bg-[var(--text-ink)] text-white shadow-xs'
-                      : 'bg-slate-100 text-[var(--text-soft-ink)] hover:bg-slate-200'
+                      ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xs'
+                      : 'bg-slate-100 dark:bg-slate-800 text-[color:var(--fg-muted)] hover:bg-slate-200 hover:text-[color:var(--fg)]'
                   }`}
                 >
                   {p.title}
@@ -430,21 +435,21 @@ export const StudioTab: React.FC<StudioTabProps> = ({
           {/* LEFT SIDE (7 to 8 Cols on Wide Displays): Editor & Asset Drop Zone */}
           <div className="lg:col-span-7 xl:col-span-7 2xl:col-span-8 space-y-6">
             {/* Main Content Editor Card */}
-            <div className="frontify-card p-6 flex flex-col relative overflow-hidden">
+            <div className="surface-light frontify-card p-6 flex flex-col relative overflow-hidden">
               {/* Scanning Beam (700ms sweeping laser line) */}
               {isScanning && <div className="scan-line" />}
 
               {/* Editor Header Bar */}
-              <div className="flex flex-wrap items-center justify-between pb-4 border-b border-[var(--border-color)] mb-4 gap-3">
+              <div className="flex flex-wrap items-center justify-between pb-4 border-b border-[color:var(--line)] mb-4 gap-3">
                 <div className="flex items-center gap-3">
-                  <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
+                  <span className="text-xs font-black uppercase tracking-wider text-[color:var(--fg-muted)]">
                     Document Editor
                   </span>
-                  <span className="text-xs text-[var(--text-muted)]">•</span>
-                  <span className="text-xs font-medium text-[var(--text-soft-ink)]">
+                  <span className="text-xs text-[color:var(--fg-subtle)]">•</span>
+                  <span className="text-xs font-bold text-[color:var(--fg)]">
                     {content.split(/\s+/).filter(Boolean).length} words
                   </span>
-                  <span className="text-xs text-[var(--text-muted)]">•</span>
+                  <span className="text-xs text-[color:var(--fg-subtle)]">•</span>
                   <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
                     Live Scanner Active
                   </span>
@@ -463,13 +468,13 @@ export const StudioTab: React.FC<StudioTabProps> = ({
                   </button>
 
                   {/* View Mode Toggle */}
-                  <div className="flex items-center bg-slate-100 p-1 rounded-xl text-xs font-semibold">
+                  <div className="flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-xl text-xs font-semibold">
                     <button
                       onClick={() => setViewMode('edit')}
                       className={`px-3 py-1 rounded-lg transition-colors cursor-pointer flex items-center gap-1 ${
                         viewMode === 'edit'
-                          ? 'bg-white text-[var(--text-ink)] shadow-xs font-bold'
-                          : 'text-[var(--text-soft-ink)] hover:text-[var(--text-ink)]'
+                          ? 'bg-white dark:bg-slate-900 text-[color:var(--fg)] shadow-xs font-bold'
+                          : 'text-[color:var(--fg-muted)] hover:text-[color:var(--fg)] font-medium'
                       }`}
                     >
                       <FileEdit className="w-3.5 h-3.5" />
@@ -479,8 +484,8 @@ export const StudioTab: React.FC<StudioTabProps> = ({
                       onClick={() => setViewMode('inspect')}
                       className={`px-3 py-1 rounded-lg transition-colors cursor-pointer flex items-center gap-1 ${
                         viewMode === 'inspect'
-                          ? 'bg-white text-[var(--text-ink)] shadow-xs font-bold'
-                          : 'text-[var(--text-soft-ink)] hover:text-[var(--text-ink)]'
+                          ? 'bg-white dark:bg-slate-900 text-[color:var(--fg)] shadow-xs font-bold'
+                          : 'text-[color:var(--fg-muted)] hover:text-[color:var(--fg)] font-medium'
                       }`}
                     >
                       <Eye className="w-3.5 h-3.5" />
@@ -552,8 +557,8 @@ export const StudioTab: React.FC<StudioTabProps> = ({
 
               {/* Custom Two-Layer Overlay Text Editor: Live deterministic banned word highlighting */}
               {viewMode === 'inspect' ? (
-                <div className="min-h-[440px] xl:min-h-[500px] rounded-2xl bg-slate-50/70 dark:bg-slate-900/50 p-5 border border-[var(--border-color)]">
-                  <div className="text-[15px] sm:text-[16px] font-normal text-[var(--text-ink)] leading-[28px] min-h-[420px] xl:min-h-[480px]">
+                <div className="surface-light min-h-[440px] xl:min-h-[500px] rounded-2xl bg-white p-5 border border-[color:var(--line)]">
+                  <div className="text-[16px] font-normal text-[color:var(--fg)] leading-[1.7] min-h-[420px] xl:min-h-[480px]">
                     {renderHighlightedText()}
                   </div>
                 </div>
@@ -571,18 +576,18 @@ export const StudioTab: React.FC<StudioTabProps> = ({
               )}
 
               {/* Editor Status Footer */}
-              <div className="mt-4 pt-4 border-t border-[var(--border-color)] flex flex-wrap items-center justify-between gap-3 text-xs text-[var(--text-soft-ink)]">
+              <div className="mt-4 pt-4 border-t border-[color:var(--line)] flex flex-wrap items-center justify-between gap-3 text-xs text-[color:var(--fg-muted)]">
                 <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-rose-500" />
-                  <span>Solid Wavy = Deterministic Banned Terms</span>
-                  <span className="text-[var(--text-muted)]">•</span>
-                  <span className="w-2 h-2 rounded-full bg-violet-500" />
-                  <span>Dashed = AI Tone Violations</span>
+                  <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
+                  <span className="font-semibold text-[color:var(--fg)]">Solid Wavy = Deterministic Banned Terms</span>
+                  <span className="text-[color:var(--fg-subtle)]">•</span>
+                  <span className="w-2.5 h-2.5 rounded-full bg-violet-500" />
+                  <span className="font-semibold text-[color:var(--fg)]">Dashed = AI Tone Violations</span>
                 </div>
 
-                <div className="flex items-center gap-2 font-bold text-[var(--text-ink)]">
+                <div className="flex items-center gap-2 font-black text-[color:var(--fg)]">
                   <span>Score:</span>
-                  <span className={score >= 90 ? 'text-emerald-600' : 'text-rose-600'}>
+                  <span className={score >= 90 ? 'text-emerald-600 font-extrabold' : 'text-rose-600 font-extrabold'}>
                     {score}%
                   </span>
                 </div>
@@ -590,17 +595,17 @@ export const StudioTab: React.FC<StudioTabProps> = ({
             </div>
 
             {/* Visual Asset Safe-Zone Verification Zone (with drag animation) */}
-            <div className="frontify-card p-6">
+            <div className="surface-light frontify-card p-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-2xl bg-purple-500/10 text-purple-600 flex items-center justify-center border border-purple-500/20">
                     <ImageIcon className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-[var(--text-ink)]">
+                    <h3 className="text-sm font-black text-[color:var(--fg)]">
                       Visual Brand Asset Safe-Zone Verification
                     </h3>
-                    <p className="text-xs text-[var(--text-soft-ink)]">
+                    <p className="text-xs text-[color:var(--fg-muted)] font-medium">
                       Audit logo clear space margins and contrast against brand guidelines
                     </p>
                   </div>
@@ -612,14 +617,14 @@ export const StudioTab: React.FC<StudioTabProps> = ({
               </div>
 
               {uploadedLogo ? (
-                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="p-4 rounded-2xl bg-slate-50 border border-[color:var(--line)] flex flex-col sm:flex-row items-center justify-between gap-4">
                   <div className="flex items-center gap-4">
                     <div className="w-16 h-16 rounded-xl bg-slate-900 flex items-center justify-center p-2 border border-slate-300">
                       <div className="text-white font-black text-xl tracking-tight">BM</div>
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-slate-900">{uploadedLogo.name}</p>
-                      <p className="text-[11px] text-slate-500">Vector SVG • 2400 x 800 px</p>
+                      <p className="text-xs font-bold text-[color:var(--fg)]">{uploadedLogo.name}</p>
+                      <p className="text-[11px] text-[color:var(--fg-muted)]">Vector SVG • 2400 x 800 px</p>
                       <div className="flex items-center gap-2 mt-1">
                         <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">
                           <CheckCircle2 className="w-3 h-3" /> Clearspace 100% OK
@@ -633,7 +638,7 @@ export const StudioTab: React.FC<StudioTabProps> = ({
 
                   <button
                     onClick={() => setUploadedLogo(null)}
-                    className="text-xs font-semibold text-slate-500 hover:text-slate-800 px-3 py-1.5 rounded-lg border border-slate-200 bg-white cursor-pointer"
+                    className="text-xs font-semibold text-[color:var(--fg-muted)] hover:text-[color:var(--fg)] px-3 py-1.5 rounded-lg border border-[color:var(--line)] bg-white cursor-pointer"
                   >
                     Replace Asset
                   </button>
@@ -674,7 +679,7 @@ export const StudioTab: React.FC<StudioTabProps> = ({
                   className={`border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all ${
                     isDragOver
                       ? 'border-indigo-500 bg-indigo-50/50 scale-[1.01]'
-                      : 'border-[var(--border-color)] hover:border-indigo-400 bg-slate-50/50'
+                      : 'border-[color:var(--line)] hover:border-indigo-400 bg-slate-50/50'
                   }`}
                 >
                   {isVerifyingAsset ? (
@@ -686,11 +691,11 @@ export const StudioTab: React.FC<StudioTabProps> = ({
                     </div>
                   ) : (
                     <>
-                      <Upload className="w-6 h-6 text-slate-400 mx-auto mb-2" />
-                      <p className="text-xs font-bold text-[var(--text-ink)]">
+                      <Upload className="w-6 h-6 text-[color:var(--fg-subtle)] mx-auto mb-2" />
+                      <p className="text-xs font-black text-[color:var(--fg)]">
                         Drop logo asset or click to upload
                       </p>
-                      <p className="text-[11px] text-[var(--text-soft-ink)] mt-0.5">
+                      <p className="text-[11px] text-[color:var(--fg-muted)] font-medium mt-0.5">
                         Evaluates against 44px clearspace and WCAG 4.5:1 background contrast
                       </p>
                     </>
@@ -703,15 +708,15 @@ export const StudioTab: React.FC<StudioTabProps> = ({
           {/* RIGHT SIDE (5 to 4 Cols): Sticky Acrolinx Dark Ink Trust Score Panel & Actions */}
           <div className="lg:col-span-5 xl:col-span-5 2xl:col-span-4 space-y-6 lg:sticky lg:top-20">
             {/* Acrolinx Dark Ink Trust Score Panel */}
-            <div className="dark-ink-panel p-6 rounded-3xl shadow-xl flex flex-col justify-between">
-              <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-5">
+            <div className="dark-ink-panel surface-dark p-6 rounded-3xl shadow-xl flex flex-col justify-between">
+              <div className="flex items-center justify-between pb-4 border-b border-[color:var(--line)] mb-5">
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="text-xs font-bold tracking-wider uppercase text-white/80">
+                  <span className="text-xs font-black tracking-wider uppercase text-[color:var(--fg)]">
                     Acrolinx Trust Score
                   </span>
                 </div>
-                <span className="text-[11px] font-semibold text-white/50">
+                <span className="text-[11px] font-bold text-[color:var(--fg-muted)]">
                   Target: 90+
                 </span>
               </div>
@@ -721,13 +726,13 @@ export const StudioTab: React.FC<StudioTabProps> = ({
             </div>
 
             {/* 1-Click Fix & Intent Preservation Card */}
-            <div className="frontify-card p-6 space-y-5">
+            <div className="surface-light frontify-card p-6 space-y-5">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-sm font-black text-[var(--text-ink)]">
+                  <h3 className="text-sm font-black text-[color:var(--fg)]">
                     Intent-Preserving AI Rewrite
                   </h3>
-                  <p className="text-xs text-[var(--text-soft-ink)]">
+                  <p className="text-xs text-[color:var(--fg-muted)] font-medium">
                     Choose governance strictness profile
                   </p>
                 </div>
@@ -748,8 +753,8 @@ export const StudioTab: React.FC<StudioTabProps> = ({
                       onClick={() => setIntent(preset)}
                       className={`relative py-1.5 text-xs font-bold capitalize transition-colors rounded-xl cursor-pointer ${
                         isActive
-                          ? 'text-indigo-600'
-                          : 'text-[var(--text-soft-ink)] hover:text-[var(--text-ink)]'
+                          ? 'text-indigo-600 font-extrabold'
+                          : 'text-[color:var(--fg-muted)] hover:text-[color:var(--fg)]'
                       }`}
                     >
                       {isActive && (
@@ -766,7 +771,7 @@ export const StudioTab: React.FC<StudioTabProps> = ({
               </div>
 
               {/* Intent Description Preview */}
-              <p className="text-[11px] text-[var(--text-soft-ink)] leading-relaxed bg-slate-50 p-2.5 rounded-xl border border-[var(--border-color)]">
+              <p className="text-xs text-[color:var(--fg)] font-medium leading-relaxed bg-slate-50 p-3 rounded-xl border border-[color:var(--line)]">
                 {intent === 'strict'
                   ? '🔒 Strict: Absolute legal precision, qualified SLA backing, zero superlative risk.'
                   : intent === 'balanced'
@@ -803,7 +808,7 @@ export const StudioTab: React.FC<StudioTabProps> = ({
                 type="button"
                 onClick={handleSendToApprovals}
                 disabled={isSubmittingToSupabase}
-                className="w-full py-3 px-4 rounded-2xl text-xs font-bold text-[var(--text-ink)] hover:bg-slate-100 border border-[var(--border-color)] flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-60"
+                className="w-full py-3 px-4 rounded-2xl text-xs font-black text-[color:var(--fg)] bg-white hover:bg-slate-100 border border-[color:var(--line)] flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-60 shadow-xs"
               >
                 {isSubmittingToSupabase ? (
                   <>
@@ -821,25 +826,25 @@ export const StudioTab: React.FC<StudioTabProps> = ({
             </div>
 
             {/* Violations List Card (Grouped & Staggered) */}
-            <div className="frontify-card p-6 space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-[var(--border-color)]">
+            <div className="surface-light frontify-card p-6 space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-[color:var(--line)]">
                 <div className="flex items-center gap-2">
                   <ShieldAlert className="w-4 h-4 text-rose-600" />
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-ink)]">
+                  <h3 className="text-xs font-black uppercase tracking-wider text-[color:var(--fg)]">
                     Detected Violations ({filteredIssues.length})
                   </h3>
                 </div>
 
                 {/* Filter Tabs */}
-                <div className="flex items-center gap-1 text-[11px] font-semibold">
+                <div className="flex items-center gap-1 text-[11px] font-bold">
                   {(['all', 'deterministic', 'ai'] as const).map((tab) => (
                     <button
                       key={tab}
                       onClick={() => setActiveIssueTab(tab)}
-                      className={`px-2 py-0.5 rounded capitalize transition-colors ${
+                      className={`px-2.5 py-1 rounded capitalize transition-colors ${
                         activeIssueTab === tab
-                          ? 'bg-[var(--text-ink)] text-white font-bold'
-                          : 'text-[var(--text-soft-ink)] hover:bg-slate-100'
+                          ? 'bg-slate-900 text-white font-bold'
+                          : 'text-[color:var(--fg-muted)] hover:text-[color:var(--fg)] hover:bg-slate-100'
                       }`}
                     >
                       {tab}
@@ -856,7 +861,7 @@ export const StudioTab: React.FC<StudioTabProps> = ({
                   <p className="text-xs font-bold text-emerald-800">
                     Zero Violations Detected
                   </p>
-                  <p className="text-[11px] text-slate-500">
+                  <p className="text-xs text-[color:var(--fg-muted)] font-medium">
                     Copy meets all deterministic and AI brand compliance checks.
                   </p>
                 </div>
@@ -873,27 +878,27 @@ export const StudioTab: React.FC<StudioTabProps> = ({
                         transition={springTransition}
                         className={`p-3 rounded-2xl border text-xs space-y-1.5 transition-all ${
                           issue.type === 'deterministic'
-                            ? 'bg-rose-50/70 border-rose-200 text-rose-950'
-                            : 'bg-violet-50/70 border-violet-200 text-violet-950'
+                            ? 'bg-rose-50/90 border-rose-200 text-rose-950'
+                            : 'bg-violet-50/90 border-violet-200 text-violet-950'
                         }`}
                       >
                         <div className="flex items-center justify-between">
-                          <span className="font-extrabold">&quot;{issue.word}&quot;</span>
-                          <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.2 rounded bg-white/80">
+                          <span className="font-extrabold text-[color:var(--fg)]">&quot;{issue.word}&quot;</span>
+                          <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.2 rounded bg-white text-[color:var(--fg)] border border-[color:var(--line)]">
                             {issue.severity}
                           </span>
                         </div>
-                        <p className="text-[11px] text-[var(--text-soft-ink)] line-clamp-2">
+                        <p className="text-xs font-medium text-[color:var(--fg-muted)] line-clamp-2">
                           {issue.explanation}
                         </p>
                         <div className="flex items-center justify-between pt-1">
-                          <span className="text-[10px] font-semibold text-emerald-700">
+                          <span className="text-xs font-bold text-emerald-700">
                             Fix: {issue.replacement}
                           </span>
                           <button
                             type="button"
                             onClick={() => handleReplaceSingleWord(issue.word, issue.replacement)}
-                            className="text-[10px] font-bold text-indigo-600 hover:text-indigo-800 underline cursor-pointer"
+                            className="text-xs font-black text-indigo-600 hover:text-indigo-800 underline cursor-pointer"
                           >
                             Apply Fix
                           </button>
