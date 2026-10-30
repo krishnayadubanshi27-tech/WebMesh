@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { User } from '@supabase/supabase-js';
 import { TabType, BannedTerm, KanbanCard } from '@/types/brandmesh';
 import {
   INITIAL_BANNED_TERMS,
@@ -18,10 +19,17 @@ import { BrandBrainTab } from '@/components/BrandBrainTab';
 import { StudioTab } from '@/components/StudioTab';
 import { ApprovalHubTab } from '@/components/ApprovalHubTab';
 import { InsightsTab } from '@/components/InsightsTab';
+import { ProfileCard } from '@/components/ProfileCard';
+import { AuthGate } from '@/components/AuthGate';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2 } from 'lucide-react';
 
-export default function Home() {
+interface AuthenticatedAppProps {
+  user: User;
+  onSignOut: () => Promise<void>;
+}
+
+const AuthenticatedApp: React.FC<AuthenticatedAppProps> = ({ user, onSignOut }) => {
   const [activeTab, setActiveTab] = useState<TabType>('studio'); // default to Studio for immediate impact
   const { isCloudMode } = useAuditStore();
   const [bannedTerms, setBannedTerms] = useState<BannedTerm[]>(INITIAL_BANNED_TERMS);
@@ -50,7 +58,11 @@ export default function Home() {
   const handleRouteToApprovals = (newCard: KanbanCard) => {
     setKanbanCards((prev) => [newCard, ...prev]);
     setActiveTab('approvals');
-    showToast(`Successfully routed "${newCard.title}" to ${newCard.status === 'fast-track' ? 'Fast-Track Approved' : 'Manager Review Queue'}!`);
+    showToast(
+      `Successfully routed "${newCard.title}" to ${
+        newCard.status === 'fast-track' ? 'Fast-Track Approved' : 'Manager Review Queue'
+      }!`
+    );
   };
 
   // Guideline Doctor recommendation acceptance
@@ -62,7 +74,8 @@ export default function Home() {
           ? {
               ...term,
               severity: 'warning',
-              reason: 'Simplified by Guideline Doctor: Conditional commitments permitted when hyperlinked to Enterprise SLA Schedule.',
+              reason:
+                'Simplified by Guideline Doctor: Conditional commitments permitted when hyperlinked to Enterprise SLA Schedule.',
               approvedAlternatives: [
                 'commit with SLA backing',
                 'deliver verified reliability',
@@ -72,27 +85,29 @@ export default function Home() {
           : term
       )
     );
-    showToast('Guideline Doctor recommendation applied: Rule #LG-02 relaxed to permit qualified SLA commitments.');
+    showToast(
+      'Guideline Doctor recommendation applied: Rule #LG-02 relaxed to permit qualified SLA commitments.'
+    );
   };
 
   const pendingApprovalsCount = kanbanCards.filter((c) => c.status === 'review').length;
 
   return (
     <div className="min-h-screen flex flex-col relative transition-colors duration-500 overflow-x-hidden">
-      {/* Atmosphere: Slow-drifting blurred gradient blobs (Phase 1) */}
+      {/* Atmosphere: Slow-drifting blurred gradient blobs */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10" aria-hidden="true">
         <div className="absolute -top-[20%] -left-[10%] w-[620px] h-[620px] rounded-full bg-gradient-to-tr from-indigo-500/10 via-purple-500/8 to-pink-500/5 blur-[120px] ambient-blob-1" />
         <div className="absolute top-[35%] -right-[15%] w-[680px] h-[680px] rounded-full bg-gradient-to-bl from-violet-500/10 via-teal-500/8 to-indigo-500/5 blur-[140px] ambient-blob-2" />
-        {!isCloudMode && (
-          <div className="absolute inset-0 vault-grid-bg opacity-30" />
-        )}
+        {!isCloudMode && <div className="absolute inset-0 vault-grid-bg opacity-30" />}
       </div>
 
-      {/* Sticky Enterprise Navbar */}
+      {/* Sticky Enterprise Navbar with Session Profile */}
       <Navbar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         pendingApprovalsCount={pendingApprovalsCount}
+        user={user}
+        onSignOut={onSignOut}
       />
 
       {/* Expandable Confidential Ollama Zero-Retention Security Banner */}
@@ -100,6 +115,11 @@ export default function Home() {
 
       {/* Main Container: Full screen immersive enterprise workspace */}
       <main className="flex-1 w-full max-w-[1920px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-14 py-8">
+        {/* Profile Card Banner */}
+        <div className="mb-8">
+          <ProfileCard user={user} onSignOut={onSignOut} />
+        </div>
+
         <AnimatePresence mode="wait">
           {activeTab === 'brain' && (
             <motion.div
@@ -198,5 +218,15 @@ export default function Home() {
         </div>
       </footer>
     </div>
+  );
+};
+
+export default function Home() {
+  return (
+    <AuthGate>
+      {({ user, signOut }) => (
+        <AuthenticatedApp user={user} onSignOut={signOut} />
+      )}
+    </AuthGate>
   );
 }

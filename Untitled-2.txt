@@ -1,0 +1,24 @@
+# BrandMesh | AI Brand Governance Co-Pilot
+
+AI Brand Governance Co-Pilot
+
+# Co-Pilot Studio
+Wavy & dashed inline rule scanning, intent-aware AI rewriting, and Acrolinx Trust Scorecards.
+
+### Visual Brand Asset Safe-Zone Verification
+Audit logo clear space margins and contrast against brand guidelines
+Drop logo asset or click to upload
+Evaluates against 44px clearspace and WCAG 4.5:1 background contrast
+
+### Intent-Preserving AI Rewrite
+Choose governance strictness profile
+⚖️ Balanced: Natural enterprise conversational tone with certified factual integrity.
+
+### Detected Violations (7)
+Devalues enterprise brand perception and creates low-quality customer sentiment.
+Unsubstantiated superlative that fails EU & FTC factual claim compliance.
+Overused Silicon Valley cliché that signals instability to conservative enterprise buyers.
+Excessive hyperbole unsupported by technical documentation.
+Patronizing tone that implies customer user error or lack of skill.
+Unconditional 100% claims violate enterprise legal compliance protocols.
+Brand guidelines mandate positive positioning without competitor disparagement.

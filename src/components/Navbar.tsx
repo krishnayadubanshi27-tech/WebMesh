@@ -1,8 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuditStore } from '@/store';
+import { User } from '@supabase/supabase-js';
 import { TabType } from '@/types/brandmesh';
 import {
   BrainCircuit,
@@ -15,6 +17,10 @@ import {
   Cloud,
   Shield,
   Sparkles,
+  LogOut,
+  ShieldCheck,
+  Loader2,
+  UserCircle,
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -23,6 +29,8 @@ interface NavbarProps {
   confidentialMode?: boolean;
   setConfidentialMode?: (mode: boolean | ((prev: boolean) => boolean)) => void;
   pendingApprovalsCount?: number;
+  user?: User | null;
+  onSignOut?: () => Promise<void>;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -30,9 +38,27 @@ export const Navbar: React.FC<NavbarProps> = ({
   setActiveTab,
   setConfidentialMode,
   pendingApprovalsCount = 2,
+  user = null,
+  onSignOut,
 }) => {
   const { isCloudMode, toggleCloudMode } = useAuditStore();
   const [showTooltip, setShowTooltip] = useState(false);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
+
+  // Extract user metadata with graceful fallbacks
+  const metadata = user?.user_metadata || {};
+  const avatarUrl: string | undefined = metadata.avatar_url || metadata.picture;
+  const fullName: string =
+    metadata.full_name || metadata.name || user?.email?.split('@')[0] || 'Brand Director';
+  const email: string = user?.email || 'director@enterprise.com';
+  const initials: string = fullName
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join('') || 'BM';
 
   const handleToggle = () => {
     toggleCloudMode();
@@ -199,22 +225,141 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-white" />
           </button>
 
-          {/* User Profile Avatar with Presence Dot */}
-          <div className="flex items-center gap-2.5 pl-2 border-l border-[var(--border-color)]">
-            <div className="relative">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&auto=format&fit=crop&q=80"
-                alt="Elena Vance"
-                className="w-8 h-8 rounded-full object-cover border border-[var(--border-color)] shadow-xs"
+          {/* User Profile Avatar with Presence Dot & Dropdown */}
+          <div className="relative">
+            <button
+              type="button"
+              id="navbar-user-profile-menu-btn"
+              onClick={() => setShowProfileDropdown((prev) => !prev)}
+              aria-expanded={showProfileDropdown}
+              aria-haspopup="true"
+              aria-label="User profile menu"
+              className="flex items-center gap-2.5 pl-2 border-l border-[var(--border-color)] hover:opacity-90 transition-opacity cursor-pointer text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded-lg p-1"
+            >
+              <div className="relative shrink-0">
+                {avatarUrl && !imageError ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={avatarUrl}
+                    alt={fullName}
+                    referrerPolicy="no-referrer"
+                    onError={() => setImageError(true)}
+                    className="w-8 h-8 rounded-full object-cover border border-[var(--border-color)] shadow-xs"
+                  />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-600 to-violet-600 text-white font-bold text-xs flex items-center justify-center border border-indigo-300 shadow-xs">
+                    {initials}
+                  </div>
+                )}
+                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white" />
+              </div>
+              <div className="hidden lg:block text-left">
+                <div className="font-bold text-[13px] text-[var(--text-ink)] leading-tight max-w-[130px] truncate">
+                  {fullName}
+                </div>
+                <div className="text-[11px] text-[var(--text-soft-ink)] font-medium">
+                  {user ? 'Enterprise SSO' : 'Global Brand Director'}
+                </div>
+              </div>
+              <ChevronDown
+                className={`w-3.5 h-3.5 text-[var(--text-muted)] hidden lg:block transition-transform duration-200 ${
+                  showProfileDropdown ? 'rotate-180' : ''
+                }`}
               />
-              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white" />
-            </div>
-            <div className="hidden lg:block text-left">
-              <div className="font-bold text-[13px] text-[var(--text-ink)] leading-tight">Elena Vance</div>
-              <div className="text-[11px] text-[var(--text-soft-ink)] font-medium">Global Brand Director</div>
-            </div>
-            <ChevronDown className="w-3.5 h-3.5 text-[var(--text-muted)] hidden lg:block" />
+            </button>
+
+            {/* Accessible Profile Dropdown */}
+            <AnimatePresence>
+              {showProfileDropdown && (
+                <>
+                  {/* Backdrop */}
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={() => setShowProfileDropdown(false)}
+                  />
+                  <motion.div
+                    initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                    transition={{ duration: 0.18 }}
+                    className="absolute right-0 top-full mt-2 w-64 bg-white rounded-2xl shadow-xl border border-slate-200/90 p-3 z-50 text-left"
+                  >
+                    <div className="flex items-center gap-3 p-2 border-b border-slate-100 pb-3">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-600 to-violet-600 text-white font-bold text-sm flex items-center justify-center shrink-0 overflow-hidden">
+                        {avatarUrl && !imageError ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={avatarUrl}
+                            alt={fullName}
+                            referrerPolicy="no-referrer"
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          initials
+                        )}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="font-bold text-[13px] text-slate-900 truncate">
+                          {fullName}
+                        </div>
+                        <div className="text-[11px] text-slate-500 truncate">{email}</div>
+                      </div>
+                    </div>
+
+                    <div className="py-2.5 px-2 text-[11px] text-slate-500 flex items-center justify-between">
+                      <span className="flex items-center gap-1.5 font-medium text-emerald-600">
+                        <ShieldCheck className="w-3.5 h-3.5" />
+                        Google Authenticated
+                      </span>
+                      <span className="text-[10px] uppercase font-bold text-slate-400">
+                        SSO Active
+                      </span>
+                    <div className="pt-1 pb-1 border-t border-slate-100">
+                      <Link
+                        href="/account"
+                        onClick={() => setShowProfileDropdown(false)}
+                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-100 text-[13px] font-semibold transition-colors"
+                      >
+                        <UserCircle className="w-4 h-4 text-indigo-600" />
+                        <span>Account Dashboard</span>
+                      </Link>
+                    </div>
+
+                    {onSignOut && (
+                      <div className="pt-1 border-t border-slate-100">
+                        <button
+                          type="button"
+                          id="navbar-dropdown-signout-btn"
+                          disabled={isSigningOut}
+                          onClick={async () => {
+                            setIsSigningOut(true);
+                            try {
+                              setShowProfileDropdown(false);
+                              await onSignOut();
+                            } finally {
+                              setIsSigningOut(false);
+                            }
+                          }}
+                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-rose-600 hover:bg-rose-50 text-[13px] font-semibold transition-colors cursor-pointer disabled:opacity-60"
+                        >
+                          {isSigningOut ? (
+                            <>
+                              <Loader2 className="w-4 h-4 animate-spin text-rose-500" />
+                              <span>Signing out...</span>
+                            </>
+                          ) : (
+                            <>
+                              <LogOut className="w-4 h-4" />
+                              <span>Sign Out</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    )}
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </div>
