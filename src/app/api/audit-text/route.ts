@@ -3,12 +3,10 @@ import { supabase } from '@/supabase';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { INITIAL_BANNED_TERMS, INITIAL_VERIFIED_FACTS } from '@/data/mockData';
 
-const apiKey = process.env.GEMINI_API_KEY || '';
-const genAI = new GoogleGenerativeAI(apiKey);
-
 export async function POST(req: NextRequest) {
   try {
-    const { textToAudit, brandId } = await req.json();
+    const apiKey = process.env.GEMINI_API_KEY || '';
+    const { textToAudit, brandId, isCloudMode = true } = await req.json();
 
     if (!textToAudit || typeof textToAudit !== 'string') {
       return NextResponse.json(
@@ -17,7 +15,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    console.log(`[API /api/audit-text] Auditing text (${textToAudit.length} chars) for brand: ${brandId || 'default'}`);
+    console.log(`[API /api/audit-text] Auditing text (${textToAudit.length} chars) | Mode: ${isCloudMode ? 'Cloud (Gemini)' : 'Local (Ollama: phi4-mini)'}`);
 
     // --- STEP 1: FETCH RULES FROM SUPABASE (WITH ROBUST FALLBACKS) ---
     let bannedWords: string[] = [];
@@ -26,8 +24,6 @@ export async function POST(req: NextRequest) {
     let matchedBrandId: string | null = null;
 
     try {
-      // 1a. Pull from brand_guidelines table using .select('*')
-      // Supports UUID lookup, brand_name lookup, or the most recent guideline
       const isUuid =
         typeof brandId === 'string' &&
         /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(brandId);
@@ -50,7 +46,6 @@ export async function POST(req: NextRequest) {
         guidelineRecord = data;
       }
 
-      // If no specific match was found, fetch the most recent brand_guidelines row
       if (!guidelineRecord) {
         const { data } = await supabase
           .from('brand_guidelines')
@@ -77,7 +72,6 @@ export async function POST(req: NextRequest) {
         }
       }
 
-      // 1b. If empty, check banned_words table directly as secondary fallback
       if (bannedWords.length === 0) {
         const { data: wordsData } = await supabase.from('banned_words').select('word');
         if (wordsData && wordsData.length > 0) {
@@ -88,7 +82,6 @@ export async function POST(req: NextRequest) {
       console.warn('Supabase query notice in /api/audit-text:', supaErr);
     }
 
-    // 1c. Safe default fallback if database not seeded or empty
     if (bannedWords.length === 0) {
       bannedWords = INITIAL_BANNED_TERMS.map((t) => t.term);
     }
@@ -100,18 +93,17 @@ export async function POST(req: NextRequest) {
     const foundBannedWords: string[] = [];
     bannedWords.forEach((word) => {
       if (!word) return;
-      // Exact word boundary match, case-insensitive
       const regex = new RegExp(`\\b${word}\\b`, 'gi');
       if (regex.test(textToAudit)) {
         foundBannedWords.push(word);
       }
     });
 
-    // --- STEP 3: SMART CHECK (FACTS & TONE CHECK VIA LLM) ---
-    let llmFeedback = 'All facts align.';
+    // --- STEP 3: SMART CHECK (FACTS & TONE CHECK VIA LLM: GEMINI OR OLLAMA) ---
+    let llmFeedback: string | null = null;
+    let aiError: string | null = null;
 
-    if (apiKey) {
-      const prompt = `
+    const auditPrompt = `
 You are an expert brand auditor. 
 Check the following text to see if it contradicts any of these brand facts:
 Brand Facts:
@@ -123,36 +115,102 @@ Text to audit:
 Return a brief summary of any factual violations or unsupported claims. If none, say "All facts align."
 `;
 
-      const candidateModels = [
-        'gemini-3.5-flash-lite',
-        'gemini-3.8-flash',
-        'gemini-1.5-flash',
-      ];
+    if (isCloudMode) {
+      // --- ROUTE TO CLOUD GEMINI ---
+      if (!apiKey || apiKey.trim() === '') {
+        aiError =
+          'Invalid API Key: GEMINI_API_KEY is not configured in .env.local. Please add a valid Google AI Studio key starting with AIza...';
+      } else {
+        const genAI = new GoogleGenerativeAI(apiKey);
+        const candidateModels = [
+          'gemini-3.5-flash-lite',
+          'gemini-3.8-flash',
+          'gemini-1.5-flash',
+        ];
 
-      for (const modelName of candidateModels) {
-        try {
-          const model = genAI.getGenerativeModel({ model: modelName });
-          const result = await model.generateContent(prompt);
-          const textRes = result.response.text();
-          if (textRes) {
-            llmFeedback = textRes.trim();
-            break;
+        let lastError: unknown = null;
+
+        for (const modelName of candidateModels) {
+          try {
+            const model = genAI.getGenerativeModel({ model: modelName });
+            const result = await model.generateContent(auditPrompt);
+            const textRes = result.response.text();
+            if (textRes) {
+              llmFeedback = textRes.trim();
+              break;
+            }
+          } catch (modelErr: unknown) {
+            console.warn(`Model ${modelName} audit failed:`, modelErr);
+            lastError = modelErr;
           }
-        } catch (modelErr: unknown) {
-          console.warn(`Model ${modelName} audit failed:`, modelErr);
+        }
+
+        if (!llmFeedback && lastError) {
+          const rawMsg = lastError instanceof Error ? lastError.message : String(lastError);
+          if (rawMsg.includes('API key not valid') || rawMsg.includes('API_KEY_INVALID')) {
+            aiError =
+              'Invalid API Key: The GEMINI_API_KEY in .env.local is invalid or not recognized by Google AI Studio. Please verify your key at https://aistudio.google.com/app/apikey.';
+          } else if (rawMsg.includes('RESOURCE_EXHAUSTED') || rawMsg.includes('quota') || rawMsg.includes('429')) {
+            aiError = 'Gemini Quota Exceeded: Your Google Gemini API rate limit or project quota has been reached.';
+          } else {
+            aiError = `Gemini API Error: ${rawMsg}`;
+          }
         }
       }
     } else {
-      llmFeedback = 'All facts align (Gemini API key unconfigured).';
+      // --- ROUTE TO LOCAL OLLAMA (phi4-mini) ---
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+        const ollamaRes = await fetch('http://localhost:11434/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: 'phi4-mini',
+            prompt: auditPrompt,
+            stream: false,
+          }),
+          signal: controller.signal,
+        });
+
+        clearTimeout(timeoutId);
+
+        if (!ollamaRes.ok) {
+          const errText = await ollamaRes.text().catch(() => '');
+          aiError = `Ollama Error (phi4-mini HTTP ${ollamaRes.status}): ${errText || ollamaRes.statusText}`;
+        } else {
+          const ollamaData = await ollamaRes.json();
+          llmFeedback = ollamaData.response ? ollamaData.response.trim() : 'All facts align.';
+        }
+      } catch (ollamaErr: unknown) {
+        const rawMsg = ollamaErr instanceof Error ? ollamaErr.message : String(ollamaErr);
+        const isConnRefused =
+          rawMsg.toLowerCase().includes('econnrefused') ||
+          rawMsg.toLowerCase().includes('fetch failed') ||
+          rawMsg.toLowerCase().includes('connection refused') ||
+          rawMsg.toLowerCase().includes('abort') ||
+          rawMsg.toLowerCase().includes('timeout') ||
+          rawMsg.toLowerCase().includes('networkerror');
+
+        if (isConnRefused) {
+          aiError =
+            'Connection Refused: Local Ollama daemon is not running at http://localhost:11434. Please start it with "ollama serve" and verify model "phi4-mini" is installed ("ollama run phi4-mini").';
+        } else {
+          aiError = `Ollama Connection Error (phi4-mini): ${rawMsg}`;
+        }
+      }
     }
 
-    // --- STEP 4: SEND EVERYTHING BACK TO FRONTEND ---
+    // --- STEP 4: SEND RESPONSE WITH HIGH-PRECISION ERROR REPORTING ---
     return NextResponse.json({
       success: true,
       brandName: matchedBrandName,
       brandId: matchedBrandId,
       bannedWordsFound: foundBannedWords,
       aiFeedback: llmFeedback,
+      aiError: aiError,
+      isCloudMode: isCloudMode,
       factsCheckedCount: factsList.length,
       bannedWordsCheckedCount: bannedWords.length,
     });

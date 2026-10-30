@@ -30,12 +30,33 @@ export interface ExtractedBrandData {
   hex_colors: ExtractedColor[];
 }
 
+function formatGeminiError(error: unknown, fallbackMessage: string): Error {
+  if (!error) return new Error(fallbackMessage);
+  const rawMsg = error instanceof Error ? error.message : String(error);
+
+  if (rawMsg.includes('API key not valid') || rawMsg.includes('API_KEY_INVALID')) {
+    return new Error(
+      'Invalid API Key: The GEMINI_API_KEY in .env.local is invalid or not recognized by Google AI Studio. Please add a valid key starting with "AIzaSy..." at https://aistudio.google.com/app/apikey.'
+    );
+  }
+  if (rawMsg.includes('RESOURCE_EXHAUSTED') || rawMsg.includes('quota') || rawMsg.includes('429')) {
+    return new Error('Gemini Quota Exceeded: Your Google Gemini API rate limit or project quota has been reached.');
+  }
+  if (rawMsg.includes('FETCH_ERROR') || rawMsg.includes('Failed to fetch') || rawMsg.includes('ENOTFOUND')) {
+    return new Error(`Gemini Network Error: Could not connect to Google Generative AI servers. (${rawMsg})`);
+  }
+
+  return new Error(`Gemini Error: ${rawMsg}`);
+}
+
 /**
  * Sends PDF or guideline text to Gemini, forces JSON output, and parses the extracted brand governance rules.
  */
 export async function extractBrandRules(pdfText: string): Promise<ExtractedBrandData> {
-  if (!apiKey) {
-    throw new Error('GEMINI_API_KEY is not defined in environment variables.');
+  if (!apiKey || apiKey.trim() === '') {
+    throw new Error(
+      'Invalid API Key: GEMINI_API_KEY is not defined in environment variables (.env.local). Please add a valid Google AI Studio key starting with AIzaSy...'
+    );
   }
 
   // Model fallback chain: try available Gemini models
@@ -105,7 +126,7 @@ ${pdfText}
     }
   }
 
-  throw lastError || new Error('Failed to extract brand rules with Gemini.');
+  throw formatGeminiError(lastError, 'Failed to extract brand rules with Gemini.');
 }
 
 /**
@@ -113,8 +134,10 @@ ${pdfText}
  * Example prompt: "We are a luxury watch brand."
  */
 export async function autoGenerateBrandRules(brandDescription: string): Promise<ExtractedBrandData> {
-  if (!apiKey) {
-    throw new Error('GEMINI_API_KEY is not defined in environment variables.');
+  if (!apiKey || apiKey.trim() === '') {
+    throw new Error(
+      'Invalid API Key: GEMINI_API_KEY is not defined in environment variables (.env.local). Please add a valid Google AI Studio key starting with AIzaSy...'
+    );
   }
 
   const candidateModels = [
@@ -187,6 +210,6 @@ Return ONLY a JSON object matching this exact schema:
     }
   }
 
-  throw lastError || new Error('Failed to auto-generate brand rules with Gemini.');
+  throw formatGeminiError(lastError, 'Failed to auto-generate brand rules with Gemini.');
 }
 

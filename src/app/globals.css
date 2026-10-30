@@ -454,3 +454,22 @@ body {
   stroke-dasharray: 200;
   animation: ecg-dash 2.4s linear infinite;
 }
+
+/* Executive Audit Report Print Styling */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+  }
+  nav, button, #export-audit-report-btn, .no-print {
+    display: none !important;
+  }
+  .frontify-card, .surface-light, .bg-slate-900 {
+    box-shadow: none !important;
+    border: 1px solid #e2e8f0 !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    break-inside: avoid;
+  }
+}
+

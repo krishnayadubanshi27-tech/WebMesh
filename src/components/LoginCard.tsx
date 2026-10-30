@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { motion, useReducedMotion } from 'framer-motion';
-import { Layers, Shield, AlertCircle, X, ExternalLink, Lock, Mail } from 'lucide-react';
+import { Layers, Shield, AlertCircle, X, ExternalLink, Lock, Mail, Sparkles, Zap, Loader2 } from 'lucide-react';
 import { GoogleButton } from './GoogleButton';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 
@@ -12,8 +13,10 @@ interface LoginCardProps {
   className?: string;
 }
 
-export const LoginCard: React.FC<LoginCardProps> = ({ className = '' }) => {
+export const LoginCard: React.FC<LoginCardProps> = ({ className = '', onSuccess }) => {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [isDemoSubmitting, setIsDemoSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showInfoModal, setShowInfoModal] = useState<'terms' | 'privacy' | null>(null);
   const shouldReduceMotion = useReducedMotion();
@@ -85,6 +88,60 @@ export const LoginCard: React.FC<LoginCardProps> = ({ className = '' }) => {
     }
   };
 
+  const handleOneClickDemoLogin = async () => {
+    const demoEmail = 'demo@webmesh.app';
+    const demoPassword = 'demoPassword123!';
+    setErrorMessage(null);
+    setIsDemoSubmitting(true);
+
+    try {
+      if (!isSupabaseConfigured()) {
+        throw new Error('Add your Supabase URL and anon key to .env.local and restart the dev server');
+      }
+
+      let { data, error } = await supabase.auth.signInWithPassword({
+        email: demoEmail,
+        password: demoPassword,
+      });
+
+      if (
+        error &&
+        (error.message.toLowerCase().includes('invalid login credentials') ||
+          error.message.toLowerCase().includes('user not found'))
+      ) {
+        const signUpRes = await supabase.auth.signUp({
+          email: demoEmail,
+          password: demoPassword,
+        });
+
+        if (signUpRes.data.session) {
+          if (onSuccess) onSuccess();
+          router.replace('/account');
+          return;
+        }
+
+        const retryRes = await supabase.auth.signInWithPassword({
+          email: demoEmail,
+          password: demoPassword,
+        });
+        data = retryRes.data;
+        error = retryRes.error;
+      }
+
+      if (error) throw error;
+
+      if (data.session) {
+        if (onSuccess) onSuccess();
+        router.replace('/account');
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Demo sign in failed';
+      setErrorMessage(msg);
+    } finally {
+      setIsDemoSubmitting(false);
+    }
+  };
+
   // Motion variants with reduced motion support
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -115,7 +172,7 @@ export const LoginCard: React.FC<LoginCardProps> = ({ className = '' }) => {
         variants={containerVariants}
         initial="hidden"
         animate="show"
-        className={`w-full max-w-md mx-auto p-8 sm:p-10 bg-white rounded-3xl border border-slate-200/90 shadow-xl shadow-slate-200/50 relative overflow-hidden ${className}`}
+        className={`w-full max-w-md mx-auto p-6 sm:p-8 md:p-10 bg-white rounded-3xl border border-slate-200/90 shadow-xl shadow-slate-200/50 relative overflow-hidden ${className}`}
       >
         {/* Subtle decorative top accent line */}
         <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-500 via-violet-500 to-pink-500" />
@@ -189,12 +246,72 @@ export const LoginCard: React.FC<LoginCardProps> = ({ className = '' }) => {
         </div>
 
         {/* Google SSO Button */}
-        <motion.div variants={itemVariants} className="mb-6">
+        <motion.div variants={itemVariants} className="mb-3">
           <GoogleButton
             onClick={handleGoogleSignIn}
             isLoading={isLoading}
             disabled={isLoading}
           />
+        </motion.div>
+
+        {/* Email & Password / Sign Up Options */}
+        <motion.div variants={itemVariants} className="mb-4 grid grid-cols-2 gap-2.5">
+          <Link
+            href="/login"
+            className="h-11 px-3 rounded-2xl border border-slate-200 hover:border-indigo-300 hover:bg-slate-50/60 text-slate-700 font-semibold text-[12.5px] flex items-center justify-center gap-1.5 transition-all shadow-2xs hover:shadow-xs"
+          >
+            <Mail className="w-3.5 h-3.5 text-indigo-600" />
+            <span>Sign In</span>
+          </Link>
+          <Link
+            href="/signup"
+            className="h-11 px-3 rounded-2xl border border-indigo-200 bg-indigo-50/40 hover:bg-indigo-50 text-indigo-700 font-semibold text-[12.5px] flex items-center justify-center gap-1.5 transition-all shadow-2xs hover:shadow-xs"
+          >
+            <span>Create Account</span>
+          </Link>
+        </motion.div>
+
+        {/* Hackathon Evaluators Demo Credentials Box */}
+        <motion.div
+          variants={itemVariants}
+          className="mb-5 p-3.5 rounded-2xl bg-blue-50 border border-blue-200 text-sm text-slate-800 space-y-2.5 shadow-xs text-left"
+        >
+          <div className="flex items-center justify-between">
+            <span className="font-bold text-blue-950 flex items-center gap-1.5 text-xs sm:text-[13px]">
+              <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+              Hackathon Evaluators:
+            </span>
+            <span className="text-[9px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-blue-200/60 text-blue-800">
+              Demo Access
+            </span>
+          </div>
+          <div className="space-y-0.5 text-[12px] bg-white/80 p-2 rounded-xl border border-blue-200/80 font-mono text-slate-700">
+            <div>
+              <span className="font-sans font-semibold text-slate-900">Email:</span> demo@webmesh.app
+            </div>
+            <div>
+              <span className="font-sans font-semibold text-slate-900">Password:</span> demoPassword123!
+            </div>
+          </div>
+          <button
+            type="button"
+            id="login-card-demo-btn"
+            disabled={isLoading || isDemoSubmitting}
+            onClick={handleOneClickDemoLogin}
+            className="w-full h-9 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-[13px] flex items-center justify-center gap-1.5 transition-all shadow-xs hover:shadow-md active:scale-[0.98] cursor-pointer disabled:opacity-60"
+          >
+            {isDemoSubmitting ? (
+              <>
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                <span>Signing in...</span>
+              </>
+            ) : (
+              <>
+                <Zap className="w-3.5 h-3.5 text-amber-300 fill-amber-300" />
+                <span>One-Click Demo Login</span>
+              </>
+            )}
+          </button>
         </motion.div>
 
         {/* Divider with Note */}

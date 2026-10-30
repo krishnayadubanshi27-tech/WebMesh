@@ -198,31 +198,31 @@ Acme Global Enterprise Brand Guidelines & Compliance Standard (v4.2)
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 16 }}
             transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-            className="relative w-full max-w-2xl bg-white surface-light rounded-3xl shadow-2xl border border-[color:var(--line)] overflow-hidden z-10"
+            className="relative w-full max-w-2xl bg-slate-900 rounded-3xl shadow-2xl border border-slate-800 text-slate-200 overflow-hidden z-10"
           >
             {/* Header */}
-            <div className="p-6 border-b border-[color:var(--line)] flex items-center justify-between">
+            <div className="p-6 border-b border-slate-800 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#2A59FE] to-indigo-500 text-white flex items-center justify-center shadow-xs">
                   <Sparkles className="w-5 h-5" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h3 className="text-base font-bold text-[color:var(--fg)]">
+                    <h3 className="text-base font-bold text-white">
                       Upload Brand Guidelines PDF
                     </h3>
-                    <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-blue-50 text-[#2A59FE] border border-blue-200">
+                    <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/25">
                       pdf-parse & Gemini AI
                     </span>
                   </div>
-                  <p className="text-xs text-[color:var(--fg-muted)]">
+                  <p className="text-xs text-slate-400">
                     Extracts text with pdf-parse, structures with Gemini AI, and syncs to Supabase.
                   </p>
                 </div>
               </div>
               <button
                 onClick={onClose}
-                className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+                className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -230,9 +230,24 @@ Acme Global Enterprise Brand Guidelines & Compliance Standard (v4.2)
 
             {/* Error Banner */}
             {errorMessage && (
-              <div className="mx-6 mt-4 p-3.5 bg-rose-50 border border-rose-200 rounded-2xl flex items-center gap-2.5 text-xs text-rose-800 font-semibold">
-                <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
-                <span>{errorMessage}</span>
+              <div
+                role="alert"
+                className="mx-6 mt-4 p-3.5 bg-rose-50 border border-rose-300 rounded-2xl flex items-start justify-between gap-3 text-xs text-rose-900 shadow-xs"
+              >
+                <div className="flex items-start gap-2.5">
+                  <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+                  <div className="space-y-1">
+                    <p className="font-bold text-rose-950">Gemini AI Processing Notice</p>
+                    <p className="font-mono text-[11.5px] text-rose-800 break-words whitespace-pre-wrap">{errorMessage}</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setErrorMessage(null)}
+                  className="text-rose-400 hover:text-rose-700 p-1 rounded-lg transition-colors cursor-pointer shrink-0"
+                >
+                  <X className="w-4 h-4" />
+                </button>
               </div>
             )}
 
@@ -262,15 +277,15 @@ Acme Global Enterprise Brand Guidelines & Compliance Standard (v4.2)
                       isDragOver
                         ? 'border-[#2A59FE] bg-blue-50/40'
                         : selectedFile
-                        ? 'border-emerald-300 bg-emerald-50/30'
-                        : 'border-slate-200 hover:border-[#2A59FE] bg-slate-50/50 hover:bg-blue-50/20'
+                        ? 'border-emerald-500/50 bg-emerald-950/20'
+                        : 'border-slate-700 hover:border-indigo-500 bg-slate-800/40 hover:bg-indigo-950/20'
                     }`}
                   >
                     <div
                       className={`w-14 h-14 rounded-2xl shadow-xs border flex items-center justify-center transition-transform ${
                         selectedFile
-                          ? 'bg-emerald-50 border-emerald-200 text-emerald-600'
-                          : 'bg-white border-slate-200 text-[#2A59FE]'
+                          ? 'bg-emerald-950/50 border-emerald-500/40 text-emerald-400'
+                          : 'bg-slate-800 border-slate-700 text-indigo-400'
                       }`}
                     >
                       {selectedFile ? (
@@ -442,15 +457,15 @@ Acme Global Enterprise Brand Guidelines & Compliance Standard (v4.2)
             </div>
 
             {/* Footer */}
-            <div className="p-4 bg-slate-50/80 border-t border-slate-100 flex items-center justify-between gap-3">
-              <span className="text-xs text-slate-500 italic">
+            <div className="p-4 bg-slate-900 border-t border-slate-800 flex items-center justify-between gap-3">
+              <span className="text-xs text-slate-400 italic">
                 {saveStatusMessage || (stage === 'extracted' ? 'Ready to sync to database' : '')}
               </span>
 
               <div className="flex items-center gap-2.5">
                 <button
                   onClick={onClose}
-                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-800 hover:bg-slate-200/50 rounded-xl transition-colors cursor-pointer"
+                  className="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>

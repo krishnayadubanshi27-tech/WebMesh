@@ -17,9 +17,9 @@ export const LoginPage: React.FC = () => {
   const shouldReduceMotion = useReducedMotion();
 
   return (
-    <div className="min-h-screen w-full flex flex-col lg:grid lg:grid-cols-12 bg-[#F8FAFC] selection:bg-indigo-100 selection:text-indigo-900 overflow-x-hidden">
+    <div className="min-h-screen w-full grid grid-cols-1 lg:grid-cols-2 bg-[#F8FAFC] selection:bg-indigo-100 selection:text-indigo-900 overflow-x-hidden">
       {/* LEFT PANEL: Enterprise Brand Panel (Hidden below lg) */}
-      <div className="hidden lg:flex lg:col-span-5 xl:col-span-6 relative overflow-hidden bg-gradient-to-br from-[#0B1030] via-[#161244] to-[#1B1450] text-white p-10 xl:p-14 2xl:p-16 flex-col justify-between">
+      <div className="hidden lg:flex flex-col justify-between min-h-screen relative overflow-hidden bg-gradient-to-br from-[#0B1030] via-[#161244] to-[#1B1450] text-white p-10 xl:p-14 2xl:p-16">
         {/* Soft Animated Gradient Mesh (Transform-only, low-opacity) */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden -z-0" aria-hidden="true">
           <motion.div
@@ -182,7 +182,7 @@ export const LoginPage: React.FC = () => {
       </div>
 
       {/* RIGHT PANEL: Centred Login Card */}
-      <div className="flex-1 flex flex-col justify-center items-center p-6 sm:p-10 lg:p-12 xl:p-16 min-h-screen relative">
+      <div className="w-full min-h-screen flex items-center justify-center p-4 sm:p-8 md:p-12 lg:p-14 xl:p-16 relative">
         {/* Ambient subtle background glow */}
         <div className="absolute top-1/4 right-1/4 w-80 h-80 rounded-full bg-indigo-500/5 blur-[120px] pointer-events-none" />
         <div className="absolute bottom-1/4 left-1/4 w-80 h-80 rounded-full bg-violet-500/5 blur-[120px] pointer-events-none" />

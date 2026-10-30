@@ -96,22 +96,22 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
 
   return (
     <div
-      className={`w-full bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-8 shadow-sm relative overflow-hidden transition-all duration-300 ${className}`}
+      className={`w-full bg-slate-900 rounded-3xl border border-slate-800 p-6 sm:p-8 shadow-xl relative overflow-hidden transition-all duration-300 text-slate-200 ${className}`}
     >
       {/* Top accent gradient bar */}
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-violet-500 to-pink-500" />
 
       {/* Greeting Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-800">
         <div>
-          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-indigo-600">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-indigo-400">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Authenticated Workspace</span>
           </div>
-          <h2 className="text-xl sm:text-2xl font-extrabold text-[#0F1535] tracking-tight mt-0.5">
+          <h2 className="text-xl sm:text-2xl font-extrabold text-slate-100 tracking-tight mt-0.5">
             {getGreeting()}, {firstName}
           </h2>
-          <p className="text-xs text-[#5F6788] mt-0.5">
+          <p className="text-xs text-slate-400 mt-0.5">
             Signed in to BrandMesh Enterprise AI Governance Suite
           </p>
         </div>
@@ -120,9 +120,9 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
         <div className="flex items-center gap-2.5 self-start sm:self-auto">
           <Link
             href="/account"
-            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl border border-slate-200 bg-white text-slate-700 hover:text-indigo-600 hover:border-indigo-200 hover:bg-indigo-50/50 text-[13px] font-semibold transition-all cursor-pointer shadow-2xs hover:shadow-xs active:scale-[0.98]"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl border border-slate-800 bg-slate-800/60 text-slate-300 hover:text-white hover:border-slate-700 hover:bg-slate-800 text-[13px] font-semibold transition-all cursor-pointer shadow-2xs hover:shadow-xs active:scale-[0.98]"
           >
-            <UserCircle className="w-4 h-4 text-indigo-500" />
+            <UserCircle className="w-4 h-4 text-indigo-400" />
             <span>Account Details</span>
           </Link>
 
@@ -132,16 +132,16 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
             id="profile-card-signout-btn"
             onClick={handleSignOutClick}
             disabled={isSigningOut}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl border border-slate-200 bg-white text-slate-700 hover:text-rose-600 hover:border-rose-200 hover:bg-rose-50/50 text-[13px] font-semibold transition-all cursor-pointer shadow-2xs hover:shadow-xs active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl border border-slate-800 bg-slate-800/60 text-slate-300 hover:text-rose-400 hover:border-rose-900/50 hover:bg-rose-950/30 text-[13px] font-semibold transition-all cursor-pointer shadow-2xs hover:shadow-xs active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none"
           >
             {isSigningOut ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin text-rose-500" />
+                <Loader2 className="w-4 h-4 animate-spin text-rose-400" />
                 <span>Signing out...</span>
               </>
             ) : (
               <>
-                <LogOut className="w-4 h-4 text-slate-500" />
+                <LogOut className="w-4 h-4 text-slate-400" />
                 <span>Sign Out</span>
               </>
             )}
@@ -155,7 +155,7 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
           {/* Large Avatar with Gradient Ring & Initial Fallback */}
           <div className="relative shrink-0">
             <div className="p-0.5 rounded-full bg-gradient-to-tr from-indigo-500 via-violet-500 to-pink-500 shadow-md shadow-indigo-500/20">
-              <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-full overflow-hidden bg-white p-0.5">
+              <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-full overflow-hidden bg-slate-900 p-0.5">
                 {avatarUrl && !imageError ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -174,7 +174,7 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
             </div>
             {/* Active Presence Indicator */}
             <span
-              className="absolute bottom-1 right-1 w-4 h-4 rounded-full bg-emerald-500 ring-2 ring-white shadow-xs"
+              className="absolute bottom-1 right-1 w-4 h-4 rounded-full bg-emerald-500 ring-2 ring-slate-900 shadow-xs"
               title="Session Active"
             />
           </div>
@@ -182,11 +182,11 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
           {/* Name & Credentials */}
           <div className="space-y-1.5 min-w-0">
             <div className="flex flex-wrap items-center gap-2">
-              <h3 className="font-extrabold text-lg text-[#0F1535] leading-tight truncate">
+              <h3 className="font-extrabold text-lg text-slate-100 leading-tight truncate">
                 {fullName}
               </h3>
               {/* Google Provider Chip */}
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-[11px] font-semibold">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-slate-300 text-[11px] font-semibold">
                 <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
                   <path
                     fill="#4285F4"
@@ -210,10 +210,10 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
             </div>
 
             {/* Email with Verified Chip */}
-            <div className="flex flex-wrap items-center gap-2 text-xs text-[#4A5173]">
+            <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400">
               <span className="font-medium truncate max-w-xs">{email}</span>
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[11px] font-semibold">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-[11px] font-semibold">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
                 <span>Verified</span>
               </span>
             </div>
@@ -221,28 +221,28 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
         </div>
 
         {/* Telemetry metadata: Last Sign-in & User ID with morphing copy button */}
-        <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 w-full md:w-auto pt-2 md:pt-0 border-t md:border-t-0 border-slate-100">
+        <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 w-full md:w-auto pt-2 md:pt-0 border-t md:border-t-0 border-slate-800">
           {/* Last Sign-in Chip */}
-          <div className="flex items-center gap-2 px-3 py-2 rounded-2xl bg-slate-50 border border-slate-200/80 text-[12px] text-[#4A5173]">
-            <Calendar className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
+          <div className="flex items-center gap-2 px-3 py-2 rounded-2xl bg-slate-800/70 border border-slate-700 text-[12px] text-slate-300">
+            <Calendar className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
             <div className="leading-none">
-              <span className="text-[10px] uppercase font-bold text-[#5F6788] block">Last Login</span>
-              <span className="font-semibold text-slate-800">{formatLastSignIn(user.last_sign_in_at)}</span>
+              <span className="text-[10px] uppercase font-bold text-slate-400 block">Last Login</span>
+              <span className="font-semibold text-slate-200">{formatLastSignIn(user.last_sign_in_at)}</span>
             </div>
           </div>
 
           {/* Truncated User ID with Morphing Copy Button */}
-          <div className="flex items-center gap-2 px-3 py-2 rounded-2xl bg-slate-50 border border-slate-200/80 text-[12px] text-[#4A5173]">
-            <KeyRound className="w-3.5 h-3.5 text-violet-500 shrink-0" />
+          <div className="flex items-center gap-2 px-3 py-2 rounded-2xl bg-slate-800/70 border border-slate-700 text-[12px] text-slate-300">
+            <KeyRound className="w-3.5 h-3.5 text-violet-400 shrink-0" />
             <div className="leading-none">
-              <span className="text-[10px] uppercase font-bold text-[#5F6788] block">User ID</span>
-              <span className="font-mono text-[11px] font-semibold text-slate-800">{truncatedId}</span>
+              <span className="text-[10px] uppercase font-bold text-slate-400 block">User ID</span>
+              <span className="font-mono text-[11px] font-semibold text-slate-200">{truncatedId}</span>
             </div>
             <button
               type="button"
               onClick={handleCopyId}
               aria-label={isCopied ? 'User ID Copied' : 'Copy User ID'}
-              className="ml-1 p-1 rounded-lg text-slate-500 hover:text-indigo-600 hover:bg-white transition-colors cursor-pointer"
+              className="ml-1 p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 transition-colors cursor-pointer"
               title="Copy full UID"
             >
               <AnimatePresence mode="wait" initial={false}>

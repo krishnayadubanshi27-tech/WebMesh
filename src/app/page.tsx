@@ -12,9 +12,7 @@ import {
   TOP_VIOLATED_RULES,
   DEPARTMENT_METRICS,
 } from '@/data/mockData';
-import { useAuditStore } from '@/store';
 import { Navbar } from '@/components/Navbar';
-import { ConfidentialBanner } from '@/components/ConfidentialBanner';
 import { BrandBrainTab } from '@/components/BrandBrainTab';
 import { StudioTab } from '@/components/StudioTab';
 import { ApprovalHubTab } from '@/components/ApprovalHubTab';
@@ -31,21 +29,16 @@ interface AuthenticatedAppProps {
 
 const AuthenticatedApp: React.FC<AuthenticatedAppProps> = ({ user, onSignOut }) => {
   const [activeTab, setActiveTab] = useState<TabType>('studio'); // default to Studio for immediate impact
-  const { isCloudMode } = useAuditStore();
   const [bannedTerms, setBannedTerms] = useState<BannedTerm[]>(INITIAL_BANNED_TERMS);
   const [kanbanCards, setKanbanCards] = useState<KanbanCard[]>(INITIAL_KANBAN_CARDS);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Sync Vault Mode to root HTML document for smooth variable transitions
+  // Ensure dark / vault mode is not applied
   useEffect(() => {
     if (typeof document !== 'undefined') {
-      if (!isCloudMode) {
-        document.documentElement.classList.add('vault-mode');
-      } else {
-        document.documentElement.classList.remove('vault-mode');
-      }
+      document.documentElement.classList.remove('vault-mode');
     }
-  }, [isCloudMode]);
+  }, []);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -98,7 +91,6 @@ const AuthenticatedApp: React.FC<AuthenticatedAppProps> = ({ user, onSignOut }) 
       <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10" aria-hidden="true">
         <div className="absolute -top-[20%] -left-[10%] w-[620px] h-[620px] rounded-full bg-gradient-to-tr from-indigo-500/10 via-purple-500/8 to-pink-500/5 blur-[120px] ambient-blob-1" />
         <div className="absolute top-[35%] -right-[15%] w-[680px] h-[680px] rounded-full bg-gradient-to-bl from-violet-500/10 via-teal-500/8 to-indigo-500/5 blur-[140px] ambient-blob-2" />
-        {!isCloudMode && <div className="absolute inset-0 vault-grid-bg opacity-30" />}
       </div>
 
       {/* Sticky Enterprise Navbar with Session Profile */}
@@ -109,9 +101,6 @@ const AuthenticatedApp: React.FC<AuthenticatedAppProps> = ({ user, onSignOut }) 
         user={user}
         onSignOut={onSignOut}
       />
-
-      {/* Expandable Confidential Ollama Zero-Retention Security Banner */}
-      <ConfidentialBanner isActive={!isCloudMode} />
 
       {/* Main Container: Full screen immersive enterprise workspace */}
       <main className="flex-1 w-full max-w-[1920px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-14 py-8">

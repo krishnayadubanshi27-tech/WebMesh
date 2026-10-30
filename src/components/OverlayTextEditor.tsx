@@ -6,6 +6,7 @@ interface OverlayTextEditorProps {
   value: string;
   onChange: (value: string) => void;
   bannedWords: string[];
+  aiWords?: string[];
   placeholder?: string;
   id?: string;
   className?: string;
@@ -18,14 +19,15 @@ function escapeRegExp(string: string) {
 
 /**
  * Custom 2-Layer Overlay Text Editor:
- * - Bottom layer (div): Perfectly renders live text with `bg-red-100 text-red-600 underline decoration-wavy`
- *   on any word matching the active banned words registry.
+ * - Bottom layer (div): High-contrast text-slate-200 with wavy rose underline for banned words
+ *   and dashed violet underline for AI tone issues.
  * - Top layer (transparent textarea): Transparent input where user types with matching font, padding, line-height & synchronized scroll.
  */
 export const OverlayTextEditor: React.FC<OverlayTextEditorProps> = ({
   value,
   onChange,
   bannedWords,
+  aiWords = [],
   placeholder = 'Write or paste copy to audit in real-time...',
   id = 'copilot-overlay-textarea',
   className = '',
@@ -73,19 +75,31 @@ export const OverlayTextEditor: React.FC<OverlayTextEditorProps> = ({
     return set;
   }, [bannedWords]);
 
-  // Tokenize text into matches and non-matches
+  const aiSet = useMemo(() => {
+    const set = new Set<string>();
+    aiWords.forEach((word) => {
+      if (word && typeof word === 'string') {
+        const lower = word.trim().toLowerCase();
+        if (lower) set.add(lower);
+      }
+    });
+    return set;
+  }, [aiWords]);
+
+  // Combined tokenization pattern
   const regex = useMemo(() => {
-    if (bannedSet.size === 0) return null;
-    const sortedWords = Array.from(bannedSet).sort((a, b) => b.length - a.length);
+    const allWords = new Set<string>([...bannedSet, ...aiSet]);
+    if (allWords.size === 0) return null;
+    const sortedWords = Array.from(allWords).sort((a, b) => b.length - a.length);
     const pattern = `(\\b(?:${sortedWords.map(escapeRegExp).join('|')})\\b)`;
     return new RegExp(pattern, 'gi');
-  }, [bannedSet]);
+  }, [bannedSet, aiSet]);
 
   const renderBackdropTokens = () => {
     if (!value) return null;
     if (!regex) {
       return (
-        <span className="text-[color:var(--fg)] font-normal" style={{ color: 'var(--fg)' }}>
+        <span className="text-slate-200 font-normal">
           {value}
         </span>
       );
@@ -93,13 +107,25 @@ export const OverlayTextEditor: React.FC<OverlayTextEditorProps> = ({
 
     const parts = value.split(regex);
     return parts.map((part, index) => {
-      const isBanned = bannedSet.has(part.toLowerCase());
+      const lower = part.toLowerCase();
+      const isBanned = bannedSet.has(lower);
+      const isAi = aiSet.has(lower);
+
       if (isBanned) {
         return (
           <span
             key={index}
-            className="bg-red-100 text-red-700 underline decoration-wavy decoration-red-600 font-bold px-0.5 rounded-xs"
-            style={{ color: '#b91c1c' }}
+            className="bg-rose-500/20 text-rose-200 underline decoration-wavy decoration-rose-400 font-semibold px-1 py-0.5 rounded-xs border border-rose-500/30"
+          >
+            {part}
+          </span>
+        );
+      }
+      if (isAi) {
+        return (
+          <span
+            key={index}
+            className="bg-violet-500/20 text-violet-200 underline decoration-dashed decoration-violet-400 font-semibold px-1 py-0.5 rounded-xs border border-violet-500/30"
           >
             {part}
           </span>
@@ -108,8 +134,7 @@ export const OverlayTextEditor: React.FC<OverlayTextEditorProps> = ({
       return (
         <span
           key={index}
-          className="text-[color:var(--fg)] font-normal"
-          style={{ color: 'var(--fg)' }}
+          className="text-slate-200 font-normal"
         >
           {part}
         </span>
@@ -119,22 +144,22 @@ export const OverlayTextEditor: React.FC<OverlayTextEditorProps> = ({
 
   // Shared typography and layout classes ensuring 100% alignment at 16px / line-height 1.7
   const sharedTypographyStyles =
-    'font-sans text-[16px] leading-[1.7] font-normal tracking-normal p-5 whitespace-pre-wrap break-words';
+    'font-sans text-[16px] leading-[1.7] font-normal tracking-normal p-5 whitespace-pre-wrap break-words text-slate-200';
 
   return (
     <div
-      className={`relative w-full ${minHeight} rounded-2xl surface-light bg-white border border-[color:var(--line)] focus-within:border-brand-primary focus-within:ring-2 focus-within:ring-indigo-500/20 transition-all overflow-hidden ${className}`}
+      className={`relative w-full ${minHeight} rounded-2xl bg-slate-900 border border-slate-800 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20 transition-all overflow-hidden text-slate-200 ${className}`}
     >
       {/* BOTTOM LAYER: Highlighting Div */}
       <div
         ref={backdropRef}
         aria-hidden="true"
-        className={`absolute inset-0 overflow-auto pointer-events-none select-none text-[color:var(--fg)] ${sharedTypographyStyles} scrollbar-none`}
+        className={`absolute inset-0 overflow-auto pointer-events-none select-none text-slate-200 ${sharedTypographyStyles} scrollbar-none`}
         style={{
           boxSizing: 'border-box',
           wordBreak: 'break-word',
           overflowWrap: 'break-word',
-          color: 'var(--fg)',
+          color: '#e2e8f0',
         }}
       >
         {renderBackdropTokens()}
@@ -155,13 +180,13 @@ export const OverlayTextEditor: React.FC<OverlayTextEditorProps> = ({
         autoCorrect="off"
         autoCapitalize="off"
         className={`absolute inset-0 w-full h-full bg-transparent resize-none border-0 outline-none ${sharedTypographyStyles} ${
-          value ? 'text-transparent' : 'text-[color:var(--fg)]'
-        } caret-[#4F46E5] placeholder:text-[color:var(--fg-muted)] [&::placeholder]:[-webkit-text-fill-color:var(--fg-muted)] selection:bg-indigo-500/25 selection:text-transparent selection:[-webkit-text-fill-color:transparent] z-10`}
+          value ? 'text-transparent' : 'text-slate-200'
+        } caret-indigo-400 placeholder:text-slate-500 [&::placeholder]:[-webkit-text-fill-color:#64748b] selection:bg-indigo-500/30 selection:text-transparent selection:[-webkit-text-fill-color:transparent] z-10`}
         style={{
           boxSizing: 'border-box',
           wordBreak: 'break-word',
           overflowWrap: 'break-word',
-          caretColor: '#4F46E5',
+          caretColor: '#818cf8',
         }}
       />
     </div>

@@ -34,8 +34,8 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDemoSubmitting, setIsDemoSubmitting] = useState(false);
   const [isCheckingSession, setIsCheckingSession] = useState(true);
-  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
 
   // Validation & error state
   const [emailError, setEmailError] = useState<string | null>(null);
@@ -153,60 +153,105 @@ export default function LoginPage() {
 
       const cleanEmail = email.trim().toLowerCase();
 
-      if (authMode === 'signin') {
-        // Call supabase.auth.signInWithPassword()
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: cleanEmail,
-          password,
-        });
+      // Call supabase.auth.signInWithPassword()
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: cleanEmail,
+        password,
+      });
 
-        if (error) {
-          setFailedAttempts((prev) => prev + 1);
-          let friendlyMsg = error.message;
+      if (error) {
+        setFailedAttempts((prev) => prev + 1);
+        let friendlyMsg = error.message;
 
-          if (error.message.toLowerCase().includes('invalid login credentials')) {
-            friendlyMsg = 'Incorrect email or password. Please verify your credentials and try again.';
-          } else if (error.message.toLowerCase().includes('email not confirmed')) {
-            friendlyMsg = 'Your email has not been confirmed yet. Please check your inbox for the verification email.';
-          } else if (error.message.toLowerCase().includes('too many requests')) {
-            friendlyMsg = 'Too many failed login attempts. Please wait a few moments before trying again.';
-          }
-
-          throw new Error(friendlyMsg);
+        if (error.message.toLowerCase().includes('invalid login credentials')) {
+          friendlyMsg = 'Incorrect email or password. Please verify your credentials and try again.';
+        } else if (error.message.toLowerCase().includes('email not confirmed')) {
+          friendlyMsg = 'Your email has not been confirmed yet. Please check your inbox for the verification email.';
+        } else if (error.message.toLowerCase().includes('too many requests')) {
+          friendlyMsg = 'Too many failed login attempts. Please wait a few moments before trying again.';
         }
 
-        if (data.session) {
-          // Successful login: redirect immediately to /account
-          router.replace('/account');
-        }
-      } else {
-        // Sign Up Mode
-        const { data, error } = await supabase.auth.signUp({
-          email: cleanEmail,
-          password,
-          options: {
-            emailRedirectTo: typeof window !== 'undefined' ? `${window.location.origin}/account` : undefined,
-          },
-        });
+        throw new Error(friendlyMsg);
+      }
 
-        if (error) {
-          throw error;
-        }
-
-        if (data.session) {
-          // Auto-signed in
-          router.replace('/account');
-        } else {
-          setServerSuccess(
-            'Account created successfully! If email confirmation is enabled on your project, please check your inbox.'
-          );
-        }
+      if (data.session) {
+        // Successful login: redirect immediately to /account
+        router.replace('/account');
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Authentication failed. Please try again.';
       setServerError(msg);
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  // 3. One-Click Demo Login for Hackathon Evaluators
+  const handleOneClickDemoLogin = async () => {
+    const demoEmail = 'demo@webmesh.app';
+    const demoPassword = 'demoPassword123!';
+
+    setEmail(demoEmail);
+    setPassword(demoPassword);
+    setEmailError(null);
+    setPasswordError(null);
+    setServerError(null);
+    setServerSuccess(null);
+    setIsDemoSubmitting(true);
+
+    try {
+      if (!isSupabaseConfigured()) {
+        throw new Error('Add your Supabase URL and anon key to .env.local and restart the dev server');
+      }
+
+      // Call supabase.auth.signInWithPassword()
+      let { data, error } = await supabase.auth.signInWithPassword({
+        email: demoEmail,
+        password: demoPassword,
+      });
+
+      // If user does not exist yet in Supabase (e.g. fresh project), auto-create and log in
+      if (
+        error &&
+        (error.message.toLowerCase().includes('invalid login credentials') ||
+          error.message.toLowerCase().includes('user not found'))
+      ) {
+        const signUpRes = await supabase.auth.signUp({
+          email: demoEmail,
+          password: demoPassword,
+        });
+
+        if (signUpRes.data.session) {
+          router.replace('/account');
+          return;
+        }
+
+        // Retry sign in after auto sign-up
+        const retryRes = await supabase.auth.signInWithPassword({
+          email: demoEmail,
+          password: demoPassword,
+        });
+        data = retryRes.data;
+        error = retryRes.error;
+      }
+
+      if (error) {
+        let friendlyMsg = error.message;
+        if (error.message.toLowerCase().includes('invalid login credentials')) {
+          friendlyMsg = 'Incorrect demo credentials or account could not be authenticated in Supabase.';
+        }
+        throw new Error(friendlyMsg);
+      }
+
+      if (data.session) {
+        // Redirect to /account dashboard
+        router.replace('/account');
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Demo sign in failed. Please try again.';
+      setServerError(msg);
+    } finally {
+      setIsDemoSubmitting(false);
     }
   };
 
@@ -291,9 +336,9 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col lg:grid lg:grid-cols-12 bg-[#F8FAFC] selection:bg-indigo-100 selection:text-indigo-900 overflow-x-hidden">
+    <div className="min-h-screen w-full grid grid-cols-1 lg:grid-cols-2 bg-[#F8FAFC] selection:bg-indigo-100 selection:text-indigo-900 overflow-x-hidden">
       {/* LEFT PANEL: Enterprise Brand Presentation (Hidden below lg) */}
-      <div className="hidden lg:flex lg:col-span-5 xl:col-span-6 relative overflow-hidden bg-gradient-to-br from-[#0B1030] via-[#161244] to-[#1B1450] text-white p-10 xl:p-14 2xl:p-16 flex-col justify-between">
+      <div className="hidden lg:flex flex-col justify-between min-h-screen relative overflow-hidden bg-gradient-to-br from-[#0B1030] via-[#161244] to-[#1B1450] text-white p-10 xl:p-14 2xl:p-16">
         {/* Soft Animated Gradient Mesh (Transform-only, low-opacity) */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden -z-0" aria-hidden="true">
           <motion.div
@@ -449,7 +494,7 @@ export default function LoginPage() {
       </div>
 
       {/* RIGHT PANEL: Centered Secure Login Form */}
-      <div className="flex-1 flex flex-col justify-center items-center p-6 sm:p-10 lg:p-12 xl:p-16 min-h-screen relative">
+      <div className="w-full min-h-screen flex items-center justify-center p-4 sm:p-8 md:p-12 lg:p-14 xl:p-16 relative">
         {/* Ambient subtle background glow */}
         <div className="absolute top-1/4 right-1/4 w-80 h-80 rounded-full bg-indigo-500/5 blur-[120px] pointer-events-none" />
         <div className="absolute bottom-1/4 left-1/4 w-80 h-80 rounded-full bg-violet-500/5 blur-[120px] pointer-events-none" />
@@ -458,7 +503,7 @@ export default function LoginPage() {
           variants={containerVariants}
           initial="hidden"
           animate="show"
-          className="w-full max-w-md mx-auto p-8 sm:p-10 bg-white rounded-3xl border border-slate-200/90 shadow-xl shadow-slate-200/50 relative overflow-hidden z-10"
+          className="w-full max-w-md mx-auto p-6 sm:p-8 md:p-10 bg-white rounded-3xl border border-slate-200/90 shadow-xl shadow-slate-200/50 relative overflow-hidden z-10"
         >
           {/* Top accent line */}
           <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-500 via-violet-500 to-pink-500" />
@@ -487,7 +532,7 @@ export default function LoginPage() {
           <motion.div variants={itemVariants} className="mb-6">
             <div className="flex items-center justify-between">
               <h1 className="text-2xl sm:text-[26px] font-extrabold text-[#0F1535] tracking-tight leading-snug">
-                {authMode === 'signin' ? 'Sign in to Account' : 'Create Account'}
+                Sign in to Account
               </h1>
               <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700 text-[11px] font-semibold border border-indigo-200">
                 <Shield className="w-3 h-3" />
@@ -495,9 +540,7 @@ export default function LoginPage() {
               </span>
             </div>
             <p className="text-[14px] text-[#4A5173] font-normal mt-1.5 leading-relaxed">
-              {authMode === 'signin'
-                ? 'Enter your email and password to access your secure dashboard.'
-                : 'Create a new account to join your enterprise workspace.'}
+              Enter your email and password to access your secure dashboard.
             </p>
           </motion.div>
 
@@ -513,9 +556,12 @@ export default function LoginPage() {
                 <div className="flex-1 leading-snug">
                   <p className="font-semibold text-rose-950">Authentication Notice</p>
                   <p className="text-rose-800 text-[12.5px] mt-0.5">{serverError}</p>
-                  {failedAttempts >= 3 && authMode === 'signin' && (
-                    <p className="text-rose-900 font-semibold text-[11.5px] mt-1.5 underline">
-                      Tip: Need to create a new user account? Switch to &quot;Create Account&quot; below.
+                  {failedAttempts >= 3 && (
+                    <p className="text-rose-900 font-semibold text-[11.5px] mt-1.5">
+                      Tip: Don&apos;t have an account yet?{' '}
+                      <Link href="/signup" className="underline hover:text-rose-950 font-bold">
+                        Create Account here →
+                      </Link>
                     </p>
                   )}
                 </div>
@@ -596,19 +642,17 @@ export default function LoginPage() {
                 >
                   Password
                 </label>
-                {authMode === 'signin' && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setServerError(
-                        'Password reset: Contact your enterprise administrator or check your Supabase Auth user management.'
-                      );
-                    }}
-                    className="text-[12px] font-medium text-indigo-600 hover:text-indigo-800 transition-colors"
-                  >
-                    Forgot password?
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setServerError(
+                      'Password reset: Contact your enterprise administrator or check your Supabase Auth user management.'
+                    );
+                  }}
+                  className="text-[12px] font-medium text-indigo-600 hover:text-indigo-800 transition-colors"
+                >
+                  Forgot password?
+                </button>
               </div>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -618,9 +662,9 @@ export default function LoginPage() {
                   id="login-password-input"
                   name="password"
                   type={showPassword ? 'text' : 'password'}
-                  autoComplete={authMode === 'signin' ? 'current-password' : 'new-password'}
+                  autoComplete="current-password"
                   required
-                  placeholder={authMode === 'signin' ? '••••••••' : 'At least 6 characters'}
+                  placeholder="••••••••"
                   value={password}
                   onChange={(e) => {
                     setPassword(e.target.value);
@@ -655,41 +699,79 @@ export default function LoginPage() {
               <button
                 type="submit"
                 id="login-submit-button"
-                disabled={isSubmitting}
+                disabled={isSubmitting || isDemoSubmitting}
                 aria-busy={isSubmitting}
                 className="w-full h-12 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-[15px] flex items-center justify-center gap-2 transition-all duration-200 shadow-md shadow-indigo-600/25 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 disabled:opacity-65 disabled:pointer-events-none cursor-pointer"
               >
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>{authMode === 'signin' ? 'Authenticating...' : 'Creating account...'}</span>
+                    <span>Authenticating...</span>
                   </>
                 ) : (
                   <>
-                    <span>{authMode === 'signin' ? 'Sign In with Email' : 'Create Account'}</span>
+                    <span>Sign In with Email</span>
                     <ArrowRight className="w-4 h-4" />
+                  </>
+                )}
+              </button>
+            </motion.div>
+
+            {/* Hackathon Evaluators Demo Callout Box */}
+            <motion.div
+              variants={itemVariants}
+              className="p-3.5 sm:p-4 rounded-2xl bg-blue-50 border border-blue-200 text-sm text-slate-800 space-y-2.5 shadow-xs"
+            >
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-blue-950 flex items-center gap-1.5 text-sm">
+                  <Sparkles className="w-4 h-4 text-blue-600" />
+                  Hackathon Evaluators:
+                </span>
+                <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-md bg-blue-200/60 text-blue-800">
+                  Demo Access
+                </span>
+              </div>
+              <div className="space-y-1 text-[13px] bg-white/80 p-2.5 rounded-xl border border-blue-200/80 font-mono text-slate-700">
+                <div>
+                  <span className="font-sans font-semibold text-slate-900">Email:</span> demo@webmesh.app
+                </div>
+                <div>
+                  <span className="font-sans font-semibold text-slate-900">Password:</span> demoPassword123!
+                </div>
+              </div>
+              <button
+                type="button"
+                id="one-click-demo-login-btn"
+                disabled={isSubmitting || isDemoSubmitting}
+                onClick={handleOneClickDemoLogin}
+                className="w-full h-10 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-[13.5px] flex items-center justify-center gap-2 transition-all shadow-xs hover:shadow-md active:scale-[0.98] cursor-pointer disabled:opacity-60"
+              >
+                {isDemoSubmitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Signing in as Demo Evaluator...</span>
+                  </>
+                ) : (
+                  <>
+                    <Zap className="w-4 h-4 text-amber-300 fill-amber-300" />
+                    <span>One-Click Demo Login</span>
                   </>
                 )}
               </button>
             </motion.div>
           </form>
 
-          {/* Toggle between Sign In and Sign Up */}
+          {/* Link to Sign Up Page */}
           <motion.div variants={itemVariants} className="mt-4 text-center">
             <p className="text-[13px] text-[#4A5173]">
-              {authMode === 'signin' ? "Don't have an account yet?" : 'Already have an account?'}
-              <button
-                type="button"
-                id="auth-mode-toggle-btn"
-                onClick={() => {
-                  setAuthMode(authMode === 'signin' ? 'signup' : 'signin');
-                  setServerError(null);
-                  setServerSuccess(null);
-                }}
-                className="ml-1.5 font-bold text-indigo-600 hover:text-indigo-800 transition-colors cursor-pointer"
+              Don&apos;t have an account yet?
+              <Link
+                href="/signup"
+                id="login-to-signup-link"
+                className="ml-1.5 font-bold text-indigo-600 hover:text-indigo-800 transition-colors"
               >
-                {authMode === 'signin' ? 'Create Account' : 'Sign In'}
-              </button>
+                Create Account
+              </Link>
             </p>
           </motion.div>
 

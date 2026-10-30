@@ -308,7 +308,7 @@ export const StudioTab: React.FC<StudioTabProps> = ({
   const renderHighlightedText = () => {
     if (hasAppliedFix || detectedIssues.length === 0) {
       return (
-        <span className="text-[color:var(--fg)] leading-[1.7] font-normal whitespace-pre-wrap">
+        <span className="text-slate-200 leading-[1.7] font-normal whitespace-pre-wrap">
           {content}
         </span>
       );
@@ -316,7 +316,7 @@ export const StudioTab: React.FC<StudioTabProps> = ({
 
     const wordsToHighlight = detectedIssues.map((i) => i.word).filter(Boolean);
     if (wordsToHighlight.length === 0) {
-      return <span className="text-[color:var(--fg)] leading-[1.7] whitespace-pre-wrap">{content}</span>;
+      return <span className="text-slate-200 leading-[1.7] whitespace-pre-wrap">{content}</span>;
     }
 
     const pattern = new RegExp(
@@ -326,7 +326,7 @@ export const StudioTab: React.FC<StudioTabProps> = ({
     const parts = content.split(pattern);
 
     return (
-      <span className="whitespace-pre-wrap leading-[1.7]">
+      <span className="whitespace-pre-wrap leading-[1.7] text-slate-200">
         {parts.map((part, index) => {
           const matchingIssue = detectedIssues.find(
             (i) => i.word.toLowerCase() === part.toLowerCase()
@@ -338,10 +338,10 @@ export const StudioTab: React.FC<StudioTabProps> = ({
               <span
                 key={index}
                 onClick={() => setActiveTooltipIssue(matchingIssue)}
-                className={`inline-block px-1 py-0.5 mx-0.5 rounded cursor-pointer transition-all font-semibold ${
+                className={`inline-block px-1.5 py-0.5 mx-0.5 rounded cursor-pointer transition-all font-semibold ${
                   isDeterministic
-                    ? 'underline decoration-rose-500 decoration-wavy underline-offset-4 bg-rose-500/10 text-rose-900 hover:bg-rose-500/20'
-                    : 'underline decoration-violet-500 decoration-dashed underline-offset-4 bg-violet-500/10 text-violet-900 hover:bg-violet-500/20'
+                    ? 'underline decoration-rose-400 decoration-wavy underline-offset-4 bg-rose-500/20 text-rose-200 hover:bg-rose-500/30 border border-rose-500/30'
+                    : 'underline decoration-violet-400 decoration-dashed underline-offset-4 bg-violet-500/20 text-violet-200 hover:bg-violet-500/30 border border-violet-500/30'
                 }`}
                 title={`Click to inspect ${matchingIssue.ruleName}`}
               >
@@ -351,7 +351,7 @@ export const StudioTab: React.FC<StudioTabProps> = ({
           }
 
           return (
-            <span key={index} className="text-[color:var(--fg)] font-normal">
+            <span key={index} className="text-slate-200 font-normal">
               {part}
             </span>
           );
@@ -380,14 +380,14 @@ export const StudioTab: React.FC<StudioTabProps> = ({
 
         {/* Mode Switcher & Presets */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-          <div className="flex items-center bg-slate-100 p-1 rounded-2xl border border-[color:var(--line)] text-xs font-semibold">
+          <div className="flex items-center bg-slate-900 p-1 rounded-2xl border border-slate-800 text-xs font-semibold">
             <button
               type="button"
               onClick={() => setActiveStudioMode('copilot')}
               className={`px-3.5 py-1.5 rounded-xl transition-all cursor-pointer ${
                 activeStudioMode === 'copilot'
-                  ? 'bg-white text-[color:var(--fg)] shadow-xs font-black border border-[color:var(--line)]'
-                  : 'text-[color:var(--fg-muted)] hover:text-[color:var(--fg)] font-bold'
+                  ? 'bg-slate-800 text-slate-100 shadow-xs font-black border border-slate-700'
+                  : 'text-slate-400 hover:text-slate-200 font-bold'
               }`}
             >
               Co-Pilot Studio
@@ -398,7 +398,7 @@ export const StudioTab: React.FC<StudioTabProps> = ({
               className={`px-3.5 py-1.5 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
                 activeStudioMode === 'auditor'
                   ? 'bg-indigo-600 text-white shadow-xs font-black'
-                  : 'text-[color:var(--fg-muted)] hover:text-[color:var(--fg)] font-bold'
+                  : 'text-slate-400 hover:text-slate-200 font-bold'
               }`}
             >
               <Sparkles className="w-3.5 h-3.5" />
@@ -414,8 +414,8 @@ export const StudioTab: React.FC<StudioTabProps> = ({
                   onClick={() => handleSelectPreset(p.id)}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
                     selectedPresetId === p.id
-                      ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs'
-                      : 'bg-slate-100 hover:bg-slate-200 text-[color:var(--fg-muted)] hover:text-[color:var(--fg)] border-transparent'
+                      ? 'bg-indigo-600 text-white border-indigo-500 shadow-xs'
+                      : 'bg-slate-800/70 hover:bg-slate-700/80 text-slate-300 hover:text-white border-slate-700/60'
                   }`}
                 >
                   {p.title}
@@ -450,7 +450,7 @@ export const StudioTab: React.FC<StudioTabProps> = ({
                     {content.split(/\s+/).filter(Boolean).length} words
                   </span>
                   <span className="text-xs text-[color:var(--fg-subtle)]">•</span>
-                  <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                  <span className="text-[11px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/25">
                     Live Scanner Active
                   </span>
                 </div>
@@ -460,21 +460,21 @@ export const StudioTab: React.FC<StudioTabProps> = ({
                   <button
                     type="button"
                     onClick={handleTriggerAuditScan}
-                    className="px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer border border-indigo-200"
+                    className="px-3 py-1.5 rounded-xl bg-indigo-500/15 hover:bg-indigo-500/25 text-indigo-300 text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer border border-indigo-500/30"
                     title="Sweep laser scanning beam down document"
                   >
-                    <Play className="w-3 h-3 text-indigo-600 fill-indigo-600" />
+                    <Play className="w-3 h-3 text-indigo-400 fill-indigo-400" />
                     <span>Scan</span>
                   </button>
 
                   {/* View Mode Toggle */}
-                  <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-[color:var(--line)] text-xs font-semibold">
+                  <div className="flex items-center bg-slate-900 p-1 rounded-xl border border-slate-800 text-xs font-semibold">
                     <button
                       onClick={() => setViewMode('edit')}
                       className={`px-3 py-1 rounded-lg transition-colors cursor-pointer flex items-center gap-1 ${
                         viewMode === 'edit'
-                          ? 'bg-white text-[color:var(--fg)] shadow-xs font-bold border border-[color:var(--line)]'
-                          : 'text-[color:var(--fg-muted)] hover:text-[color:var(--fg)] font-medium'
+                          ? 'bg-slate-800 text-slate-100 shadow-xs font-bold border border-slate-700'
+                          : 'text-slate-400 hover:text-slate-200 font-medium'
                       }`}
                     >
                       <FileEdit className="w-3.5 h-3.5" />
@@ -484,8 +484,8 @@ export const StudioTab: React.FC<StudioTabProps> = ({
                       onClick={() => setViewMode('inspect')}
                       className={`px-3 py-1 rounded-lg transition-colors cursor-pointer flex items-center gap-1 ${
                         viewMode === 'inspect'
-                          ? 'bg-white text-[color:var(--fg)] shadow-xs font-bold border border-[color:var(--line)]'
-                          : 'text-[color:var(--fg-muted)] hover:text-[color:var(--fg)] font-medium'
+                          ? 'bg-slate-800 text-slate-100 shadow-xs font-bold border border-slate-700'
+                          : 'text-slate-400 hover:text-slate-200 font-medium'
                       }`}
                     >
                       <Eye className="w-3.5 h-3.5" />
@@ -557,8 +557,8 @@ export const StudioTab: React.FC<StudioTabProps> = ({
 
               {/* Custom Two-Layer Overlay Text Editor: Live deterministic banned word highlighting */}
               {viewMode === 'inspect' ? (
-                <div className="surface-light min-h-[440px] xl:min-h-[500px] rounded-2xl bg-white p-5 border border-[color:var(--line)]">
-                  <div className="text-[16px] font-normal text-[color:var(--fg)] leading-[1.7] min-h-[420px] xl:min-h-[480px]">
+                <div className="min-h-[440px] xl:min-h-[500px] rounded-2xl bg-slate-900 border border-slate-800 p-5 text-slate-200">
+                  <div className="text-[16px] font-normal text-slate-200 leading-[1.7] min-h-[420px] xl:min-h-[480px]">
                     {renderHighlightedText()}
                   </div>
                 </div>
@@ -571,6 +571,7 @@ export const StudioTab: React.FC<StudioTabProps> = ({
                     setHasAppliedFix(false);
                   }}
                   bannedWords={bannedWordsList}
+                  aiWords={detectedIssues.filter((i) => i.type === 'ai').map((i) => i.word)}
                   placeholder="Paste or write brand copy to audit in real-time..."
                 />
               )}
@@ -626,10 +627,10 @@ export const StudioTab: React.FC<StudioTabProps> = ({
                       <p className="text-xs font-bold text-[color:var(--fg)]">{uploadedLogo.name}</p>
                       <p className="text-[11px] text-[color:var(--fg-muted)]">Vector SVG • 2400 x 800 px</p>
                       <div className="flex items-center gap-2 mt-1">
-                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">
+                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded border border-emerald-200">
                           <CheckCircle2 className="w-3 h-3" /> Clearspace 100% OK
                         </span>
-                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">
+                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded border border-emerald-200">
                           <CheckCircle2 className="w-3 h-3" /> {uploadedLogo.contrastRatio}
                         </span>
                       </div>
@@ -638,7 +639,7 @@ export const StudioTab: React.FC<StudioTabProps> = ({
 
                   <button
                     onClick={() => setUploadedLogo(null)}
-                    className="text-xs font-semibold text-[color:var(--fg-muted)] hover:text-[color:var(--fg)] px-3 py-1.5 rounded-lg border border-[color:var(--line)] bg-white cursor-pointer"
+                    className="text-xs font-semibold text-[color:var(--fg-muted)] hover:text-[color:var(--fg)] px-3 py-1.5 rounded-lg border border-[color:var(--line)] bg-white cursor-pointer shadow-xs"
                   >
                     Replace Asset
                   </button>
@@ -691,7 +692,7 @@ export const StudioTab: React.FC<StudioTabProps> = ({
                     </div>
                   ) : (
                     <>
-                      <Upload className="w-6 h-6 text-[color:var(--fg-subtle)] mx-auto mb-2" />
+                      <Upload className="w-6 h-6 text-slate-400 mx-auto mb-2" />
                       <p className="text-xs font-black text-[color:var(--fg)]">
                         Drop logo asset or click to upload
                       </p>
@@ -737,7 +738,7 @@ export const StudioTab: React.FC<StudioTabProps> = ({
                   </p>
                 </div>
 
-                <span className="text-[10px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-200">
+                <span className="text-[10px] font-bold text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-200">
                   Gemini Co-Pilot
                 </span>
               </div>
@@ -771,7 +772,7 @@ export const StudioTab: React.FC<StudioTabProps> = ({
               </div>
 
               {/* Intent Description Preview */}
-              <p className="text-xs text-[color:var(--fg)] font-medium leading-relaxed bg-slate-50 p-3 rounded-xl border border-[color:var(--line)]">
+              <p className="text-xs text-[color:var(--fg-muted)] font-medium leading-relaxed bg-slate-50 p-3 rounded-xl border border-[color:var(--line)]">
                 {intent === 'strict'
                   ? '🔒 Strict: Absolute legal precision, qualified SLA backing, zero superlative risk.'
                   : intent === 'balanced'
@@ -808,7 +809,7 @@ export const StudioTab: React.FC<StudioTabProps> = ({
                 type="button"
                 onClick={handleSendToApprovals}
                 disabled={isSubmittingToSupabase}
-                className="w-full py-3 px-4 rounded-2xl text-xs font-black text-[color:var(--fg)] bg-white hover:bg-slate-100 border border-[color:var(--line)] flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-60 shadow-xs"
+                className="w-full py-3 px-4 rounded-2xl text-xs font-black text-[color:var(--fg)] bg-slate-100 hover:bg-slate-200 border border-[color:var(--line)] flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-60 shadow-xs"
               >
                 {isSubmittingToSupabase ? (
                   <>
@@ -884,7 +885,7 @@ export const StudioTab: React.FC<StudioTabProps> = ({
                       >
                         <div className="flex items-center justify-between">
                           <span className="font-extrabold text-[color:var(--fg)]">&quot;{issue.word}&quot;</span>
-                          <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.2 rounded bg-white text-[color:var(--fg)] border border-[color:var(--line)]">
+                          <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.2 rounded bg-white text-[color:var(--fg-muted)] border border-[color:var(--line)]">
                             {issue.severity}
                           </span>
                         </div>

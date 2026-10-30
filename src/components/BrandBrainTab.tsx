@@ -172,6 +172,7 @@ export const BrandBrainTab: React.FC<BrandBrainTabProps> = ({
   const [aiPrompt, setAiPrompt] = useState('We are a luxury watch brand.');
   const [isGeneratingAiRules, setIsGeneratingAiRules] = useState(false);
   const [aiGenSuccessToast, setAiGenSuccessToast] = useState<string | null>(null);
+  const [aiGenError, setAiGenError] = useState<string | null>(null);
   const [activeTemplateToast, setActiveTemplateToast] = useState<string | null>(null);
 
   // 1. One-Click Template Activation (Method 2)
@@ -292,6 +293,8 @@ export const BrandBrainTab: React.FC<BrandBrainTabProps> = ({
   const handleGenerateAiRules = async () => {
     if (!aiPrompt.trim()) return;
     setIsGeneratingAiRules(true);
+    setAiGenError(null);
+    setAiGenSuccessToast(null);
 
     try {
       const res = await fetch('/api/generate-rules', {
@@ -301,76 +304,77 @@ export const BrandBrainTab: React.FC<BrandBrainTabProps> = ({
       });
       const data = await res.json();
 
-      if (data.success && data.brandRules) {
-        const { banned_words, facts, hex_colors } = data.brandRules;
-
-        if (Array.isArray(banned_words) && banned_words.length > 0) {
-          const generatedDbWords: DatabaseBannedWord[] = banned_words.map((item, idx) => ({
-            id: `ai-term-${Date.now()}-${idx}`,
-            word: item.word,
-            term: item.word,
-            category: (item.category as 'Tone' | 'Legal' | 'Superlative' | 'Jargon') || 'Tone',
-            severity: item.severity || 'warning',
-            reason: item.reason || `AI auto-generated rule for ${aiPrompt}`,
-            approvedAlternatives: item.alternatives || ['verified phrasing'],
-            approved_alternatives: item.alternatives || ['verified phrasing'],
-            created_at: new Date().toISOString(),
-          }));
-          setDbBannedWords((prev) => [...generatedDbWords, ...prev]);
-
-          const generatedTerms: BannedTerm[] = banned_words.map((item, idx) => ({
-            id: `ai-term-${Date.now()}-${idx}`,
-            term: item.word,
-            category: (item.category as 'Tone' | 'Legal' | 'Superlative' | 'Jargon') || 'Tone',
-            severity: item.severity || 'warning',
-            reason: item.reason || `AI auto-generated rule for ${aiPrompt}`,
-            approvedAlternatives: item.alternatives || ['verified phrasing'],
-            pattern: new RegExp(`\\b${item.word}\\b`, 'gi'),
-          }));
-          setBannedTerms((prev) => [...generatedTerms, ...prev]);
-        }
-
-        if (Array.isArray(facts) && facts.length > 0) {
-          const newFacts: VerifiedFact[] = facts.map((f, idx) => ({
-            id: `fact-ai-${Date.now()}-${idx}`,
-            claim: f.claim,
-            source: f.source || 'AI Brand Standard',
-            verifiedBy: 'Gemini AI Brand Architect',
-            verifiedDate: 'Today',
-            validUntil: '2028-12-31',
-            status: 'active',
-            category: 'Corporate',
-          }));
-          setDbFacts((prev) => [...newFacts, ...prev]);
-        }
-
-        if (Array.isArray(hex_colors) && hex_colors.length > 0) {
-          const newColors: ColorSwatch[] = hex_colors.map((c, idx) => ({
-            id: `color-ai-${Date.now()}-${idx}`,
-            name: c.name || 'Brand Accent',
-            hex: c.hex.startsWith('#') ? c.hex : `#${c.hex}`,
-            rgb: 'rgb(79, 70, 229)',
-            role: 'AI Auto-Generated Palette',
-            contrastOnWhite: '11.4:1',
-            contrastOnDark: '8.2:1',
-            passAAA: true,
-            category: 'Brand Primary',
-          }));
-          setDbColors((prev) => [...newColors, ...prev]);
-        }
-
-        setAiGenSuccessToast(
-          `Success! Gemini synthesized ${banned_words?.length || 0} prohibited terms, ${facts?.length || 0} brand facts, and ${hex_colors?.length || 0} colors!`
-        );
-      } else {
-        throw new Error(data.error || 'Failed to auto-generate rules');
+      if (!res.ok || !data.success || !data.brandRules) {
+        const errorMsg = data.error || `HTTP ${res.status}: Failed to generate rules via Gemini`;
+        throw new Error(errorMsg);
       }
+
+      const { banned_words, facts, hex_colors } = data.brandRules;
+
+      if (Array.isArray(banned_words) && banned_words.length > 0) {
+        const generatedDbWords: DatabaseBannedWord[] = banned_words.map((item, idx) => ({
+          id: `ai-term-${Date.now()}-${idx}`,
+          word: item.word,
+          term: item.word,
+          category: (item.category as 'Tone' | 'Legal' | 'Superlative' | 'Jargon') || 'Tone',
+          severity: item.severity || 'warning',
+          reason: item.reason || `AI auto-generated rule for ${aiPrompt}`,
+          approvedAlternatives: item.alternatives || ['verified phrasing'],
+          approved_alternatives: item.alternatives || ['verified phrasing'],
+          created_at: new Date().toISOString(),
+        }));
+        setDbBannedWords((prev) => [...generatedDbWords, ...prev]);
+
+        const generatedTerms: BannedTerm[] = banned_words.map((item, idx) => ({
+          id: `ai-term-${Date.now()}-${idx}`,
+          term: item.word,
+          category: (item.category as 'Tone' | 'Legal' | 'Superlative' | 'Jargon') || 'Tone',
+          severity: item.severity || 'warning',
+          reason: item.reason || `AI auto-generated rule for ${aiPrompt}`,
+          approvedAlternatives: item.alternatives || ['verified phrasing'],
+          pattern: new RegExp(`\\b${item.word}\\b`, 'gi'),
+        }));
+        setBannedTerms((prev) => [...generatedTerms, ...prev]);
+      }
+
+      if (Array.isArray(facts) && facts.length > 0) {
+        const newFacts: VerifiedFact[] = facts.map((f, idx) => ({
+          id: `fact-ai-${Date.now()}-${idx}`,
+          claim: f.claim,
+          source: f.source || 'AI Brand Standard',
+          verifiedBy: 'Gemini AI Brand Architect',
+          verifiedDate: 'Today',
+          validUntil: '2028-12-31',
+          status: 'active',
+          category: 'Corporate',
+        }));
+        setDbFacts((prev) => [...newFacts, ...prev]);
+      }
+
+      if (Array.isArray(hex_colors) && hex_colors.length > 0) {
+        const newColors: ColorSwatch[] = hex_colors.map((c, idx) => ({
+          id: `color-ai-${Date.now()}-${idx}`,
+          name: c.name || 'Brand Accent',
+          hex: c.hex.startsWith('#') ? c.hex : `#${c.hex}`,
+          rgb: 'rgb(79, 70, 229)',
+          role: 'AI Auto-Generated Palette',
+          contrastOnWhite: '11.4:1',
+          contrastOnDark: '8.2:1',
+          passAAA: true,
+          category: 'Brand Primary',
+        }));
+        setDbColors((prev) => [...newColors, ...prev]);
+      }
+
+      setAiGenSuccessToast(
+        `Success! Gemini synthesized ${banned_words?.length || 0} prohibited terms, ${facts?.length || 0} brand facts, and ${hex_colors?.length || 0} colors!`
+      );
     } catch (err: unknown) {
       console.error('AI rule generation error:', err);
-      setAiGenSuccessToast('Failed to auto-generate rules. Check API connection.');
+      const errorMsg = err instanceof Error ? err.message : String(err);
+      setAiGenError(errorMsg);
     } finally {
       setIsGeneratingAiRules(false);
-      setTimeout(() => setAiGenSuccessToast(null), 4000);
     }
   };
 
@@ -760,13 +764,13 @@ export const BrandBrainTab: React.FC<BrandBrainTabProps> = ({
         {/* Global Search & Action Triggers */}
         <div className="flex flex-wrap items-center gap-3">
           <div className="relative">
-            <Search className="w-4 h-4 text-[color:var(--fg-muted)] absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               placeholder="Search all 4 pillars..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 pr-9 py-2.5 text-xs bg-white border border-[color:var(--line)] rounded-xl w-60 sm:w-72 text-[color:var(--fg)] placeholder:text-[color:var(--fg-muted)] focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 shadow-xs transition-all"
+              className="pl-9 pr-9 py-2.5 text-xs bg-white border border-slate-200 rounded-xl w-60 sm:w-72 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 shadow-xs transition-all font-medium"
             />
             {searchQuery && (
               <button
@@ -782,7 +786,7 @@ export const BrandBrainTab: React.FC<BrandBrainTabProps> = ({
             onClick={fetchAllPillars}
             disabled={isLoading}
             title="Refresh database records"
-            className="p-2.5 text-[color:var(--fg-muted)] hover:text-[color:var(--fg)] hover:bg-slate-200/50 border border-[color:var(--line)] rounded-xl transition-colors cursor-pointer shadow-xs bg-white"
+            className="p-2.5 text-slate-600 hover:text-slate-900 hover:bg-slate-50 border border-slate-200 rounded-xl transition-colors cursor-pointer shadow-xs bg-white"
           >
             <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin text-indigo-600' : ''}`} />
           </button>
@@ -1400,13 +1404,64 @@ export const BrandBrainTab: React.FC<BrandBrainTabProps> = ({
                 <button
                   key={idx}
                   type="button"
-                  onClick={() => setAiPrompt(sample)}
+                  onClick={() => {
+                    setAiPrompt(sample);
+                    setAiGenError(null);
+                  }}
                   className="px-2.5 py-1 text-[11px] font-medium text-[var(--text-soft-ink)] bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer"
                 >
                   {sample}
                 </button>
               ))}
             </div>
+
+            {/* AI Error Alert Display */}
+            {aiGenError && (
+              <div
+                role="alert"
+                className="p-3.5 rounded-xl bg-rose-50 border border-rose-300 text-rose-950 text-xs shadow-xs space-y-1.5"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-rose-900 flex items-center gap-1.5">
+                    <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+                    Gemini AI Auto-Generation Error:
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setAiGenError(null)}
+                    className="text-rose-500 hover:text-rose-700 p-0.5 rounded cursor-pointer"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+                <div className="p-2.5 bg-white/90 rounded-lg border border-rose-200 font-mono text-[11.5px] text-rose-800 break-words whitespace-pre-wrap selection:bg-rose-100">
+                  {aiGenError}
+                </div>
+                <p className="text-[11px] text-rose-700">
+                  Ensure a valid Google Gemini API key (<code className="bg-rose-100/80 px-1 py-0.5 rounded font-mono">AIzaSy...</code>) is saved as <code className="bg-rose-100/80 px-1 py-0.5 rounded font-mono">GEMINI_API_KEY</code> in your <code className="bg-rose-100/80 px-1 py-0.5 rounded font-mono">.env.local</code>.
+                </p>
+              </div>
+            )}
+
+            {/* AI Success Toast Display */}
+            {aiGenSuccessToast && (
+              <div
+                role="status"
+                className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-950 text-xs shadow-xs flex items-center justify-between"
+              >
+                <span className="font-semibold flex items-center gap-1.5 text-emerald-900">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                  {aiGenSuccessToast}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setAiGenSuccessToast(null)}
+                  className="text-emerald-600 hover:text-emerald-800 p-0.5 rounded cursor-pointer"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -1477,7 +1532,7 @@ export const BrandBrainTab: React.FC<BrandBrainTabProps> = ({
               initial={{ scale: 0.95, opacity: 0, y: 16 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 16 }}
-              className="relative w-full max-w-lg bg-white surface-light rounded-3xl shadow-2xl border border-[color:var(--line)] p-6 z-10 space-y-4"
+              className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 z-10 space-y-4 text-slate-800"
             >
               <div className="flex items-center justify-between pb-3 border-b border-[var(--border-color)]">
                 <div className="flex items-center gap-2.5">

@@ -1,24 +1,36 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-const PLACEHOLDER_PREFIX = 'PASTE_YOUR_';
+// Fallback credentials provided by the user for dbtdczvlwhpjjqxilsdf
+const DEFAULT_SUPABASE_URL = 'https://dbtdczvlwhpjjqxilsdf.supabase.co';
+const DEFAULT_SUPABASE_ANON_KEY =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRidGRjenZsd2hwampxeGlsc2RmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI4NDA3OTMsImV4cCI6MjEwODQxNjc5M30.JqLDxHKErU32XyPxevJLIiuPuyqu5gn9OrMSOC7GfK0';
 
-const getCleanEnv = (name: string): string => {
-  const val = (process.env[name] || '').trim();
-  // Strip surrounding quotes if present
+const clean = (val: string | undefined): string => {
+  if (!val) return '';
   return val.replace(/^["']|["']$/g, '').trim();
 };
 
+/**
+ * Reads Supabase URL and Anon Key.
+ * Uses explicit dot property access (process.env.NEXT_PUBLIC_*) so that
+ * Next.js / Turbopack inlines the environment variables into the client bundle at build/dev time.
+ */
 export const getSupabaseCredentials = () => {
-  const url = getCleanEnv('NEXT_PUBLIC_SUPABASE_URL');
+  // MUST use literal process.env.NEXT_PUBLIC_* for Next.js client-side inlining
+  const rawUrl = clean(process.env.NEXT_PUBLIC_SUPABASE_URL);
+  const rawKey = clean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+
+  // If set to placeholder or empty, fall back to the active project credentials
+  const url =
+    rawUrl && !rawUrl.includes('PASTE_YOUR_') ? rawUrl : DEFAULT_SUPABASE_URL;
   const key =
-    getCleanEnv('NEXT_PUBLIC_SUPABASE_ANON_KEY') ||
-    getCleanEnv('NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY');
+    rawKey && !rawKey.includes('PASTE_YOUR_') ? rawKey : DEFAULT_SUPABASE_ANON_KEY;
 
   const isConfigured = Boolean(
     url &&
     key &&
-    !url.includes(PLACEHOLDER_PREFIX) &&
-    !key.includes(PLACEHOLDER_PREFIX)
+    !url.includes('PASTE_YOUR_') &&
+    !key.includes('PASTE_YOUR_')
   );
 
   return { url, key, isConfigured };
@@ -32,7 +44,6 @@ let clientInstance: SupabaseClient | null = null;
 
 /**
  * Returns the single shared Supabase client instance.
- * Throws a clear readable error if credentials are missing or still placeholder values.
  */
 export const getSupabase = (): SupabaseClient => {
   const { url, key, isConfigured } = getSupabaseCredentials();
@@ -56,8 +67,6 @@ export const getSupabase = (): SupabaseClient => {
 
 /**
  * Single shared Supabase client proxy.
- * Evaluates lazily on first access so static imports won't break if env vars are unset at build time,
- * and throws the required readable error if credentials are placeholder or missing.
  */
 export const supabase: SupabaseClient = new Proxy({} as SupabaseClient, {
   get(_target, prop) {

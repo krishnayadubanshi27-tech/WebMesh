@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAuditStore } from '@/store';
 import { User } from '@supabase/supabase-js';
 import { TabType } from '@/types/brandmesh';
 import {
@@ -14,9 +13,6 @@ import {
   ChevronDown,
   Bell,
   Layers,
-  Cloud,
-  Shield,
-  Sparkles,
   LogOut,
   ShieldCheck,
   Loader2,
@@ -41,8 +37,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   user = null,
   onSignOut,
 }) => {
-  const { isCloudMode, toggleCloudMode } = useAuditStore();
-  const [showTooltip, setShowTooltip] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
@@ -59,13 +53,6 @@ export const Navbar: React.FC<NavbarProps> = ({
     .slice(0, 2)
     .map((part) => part[0]?.toUpperCase())
     .join('') || 'BM';
-
-  const handleToggle = () => {
-    toggleCloudMode();
-    if (setConfidentialMode) {
-      setConfidentialMode(isCloudMode);
-    }
-  };
 
   const navTabs: { id: TabType; label: string; icon: React.ElementType; badge?: number }[] = [
     { id: 'brain', label: 'Brand Brain', icon: BrainCircuit },
@@ -113,11 +100,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                   onClick={() => setActiveTab(tab.id)}
                   className={`relative px-4 py-2 rounded-xl text-[13px] font-semibold flex items-center gap-2 transition-colors cursor-pointer select-none whitespace-nowrap ${
                     isActive
-                      ? 'text-indigo-600 font-bold'
-                      : 'text-[var(--text-soft-ink)] hover:text-[var(--text-ink)] hover:bg-slate-200/50'
+                      ? 'text-indigo-400 font-bold'
+                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
                   }`}
                 >
-                  <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-indigo-600' : 'text-[var(--text-muted)]'}`} />
+                  <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-indigo-400' : 'text-slate-400'}`} />
                   <span>{tab.label}</span>
 
                   {tab.badge !== undefined && tab.badge > 0 && (
@@ -129,7 +116,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       className={`text-[11px] font-bold px-2 py-0.5 rounded-full leading-none shrink-0 ${
                         isActive
                           ? 'bg-indigo-600 text-white shadow-xs'
-                          : 'bg-amber-100 text-amber-800 border border-amber-300'
+                          : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
                       }`}
                     >
                       {tab.badge}
@@ -139,7 +126,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   {isActive && (
                     <motion.div
                       layoutId="nav-pill"
-                      className="absolute inset-0 bg-white rounded-xl -z-10 shadow-xs border border-indigo-200/80"
+                      className="absolute inset-0 bg-slate-800/80 rounded-xl -z-10 shadow-xs border border-indigo-500/30"
                       transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                     />
                   )}
@@ -149,72 +136,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           </nav>
         </div>
 
-        {/* Right: Actions, Compact Privacy Mode & Profile */}
+        {/* Right: Actions & Profile */}
         <div className="flex items-center gap-3">
-          {/* Compact Switch with Tooltip */}
-          <div className="relative">
-            <button
-              type="button"
-              id="cloud-mode-compact-switch"
-              onClick={handleToggle}
-              onMouseEnter={() => setShowTooltip(true)}
-              onMouseLeave={() => setShowTooltip(false)}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all cursor-pointer shadow-xs ${
-                !isCloudMode
-                  ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 ring-1 ring-emerald-500/20'
-                  : 'bg-white border-[var(--border-color)] text-[var(--text-ink)] hover:border-indigo-300'
-              }`}
-              aria-label="Toggle Cloud vs Confidential Local Mode"
-            >
-              {isCloudMode ? (
-                <>
-                  <Cloud className="w-3.5 h-3.5 text-indigo-500" />
-                  <span className="text-[12px] font-semibold hidden sm:inline">Cloud (Gemini)</span>
-                  <div className="w-7 h-4 bg-indigo-600 rounded-full relative p-0.5 transition-colors">
-                    <motion.div
-                      layout
-                      className="w-3 h-3 bg-white rounded-full shadow-xs"
-                      style={{ float: 'right' }}
-                    />
-                  </div>
-                </>
-              ) : (
-                <>
-                  <Shield className="w-3.5 h-3.5 text-emerald-500" />
-                  <span className="text-[12px] font-semibold text-emerald-600 hidden sm:inline">Vault Air-Gapped</span>
-                  <div className="w-7 h-4 bg-emerald-600 rounded-full relative p-0.5 transition-colors">
-                    <motion.div
-                      layout
-                      className="w-3 h-3 bg-white rounded-full shadow-xs"
-                      style={{ float: 'left' }}
-                    />
-                  </div>
-                </>
-              )}
-            </button>
-
-            {/* Compact Tooltip */}
-            <AnimatePresence>
-              {showTooltip && (
-                <motion.div
-                  initial={{ opacity: 0, y: 4, scale: 0.96 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 4, scale: 0.96 }}
-                  className="absolute top-full mt-2 right-0 z-50 w-56 p-2.5 rounded-xl bg-slate-900 text-white text-[11px] leading-relaxed shadow-xl border border-slate-700 pointer-events-none"
-                >
-                  <p className="font-bold flex items-center gap-1.5 text-indigo-300 mb-0.5">
-                    <Sparkles className="w-3 h-3 text-indigo-400" />
-                    {isCloudMode ? 'Cloud Auditing Active' : 'Confidential Vault Active'}
-                  </p>
-                  <p className="text-slate-300">
-                    {isCloudMode
-                      ? 'Gemini 3.8 Flash high-throughput multimodal intelligence.'
-                      : 'Zero data retention on-premise Ollama execution.'}
-                  </p>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
 
           {/* Notification Button */}
           <button
@@ -282,9 +205,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 8, scale: 0.96 }}
                     transition={{ duration: 0.18 }}
-                    className="absolute right-0 top-full mt-2 w-64 bg-white rounded-2xl shadow-xl border border-slate-200/90 p-3 z-50 text-left"
+                    className="absolute right-0 top-full mt-2 w-64 bg-slate-900 rounded-2xl shadow-xl border border-slate-800 p-3 z-50 text-left text-slate-200"
                   >
-                    <div className="flex items-center gap-3 p-2 border-b border-slate-100 pb-3">
+                    <div className="flex items-center gap-3 p-2 border-b border-slate-800 pb-3">
                       <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-600 to-violet-600 text-white font-bold text-sm flex items-center justify-center shrink-0 overflow-hidden">
                         {avatarUrl && !imageError ? (
                           // eslint-disable-next-line @next/next/no-img-element
@@ -299,34 +222,36 @@ export const Navbar: React.FC<NavbarProps> = ({
                         )}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <div className="font-bold text-[13px] text-slate-900 truncate">
+                        <div className="font-bold text-[13px] text-white truncate">
                           {fullName}
                         </div>
-                        <div className="text-[11px] text-slate-500 truncate">{email}</div>
+                        <div className="text-[11px] text-slate-400 truncate">{email}</div>
                       </div>
                     </div>
 
-                    <div className="py-2.5 px-2 text-[11px] text-slate-500 flex items-center justify-between">
-                      <span className="flex items-center gap-1.5 font-medium text-emerald-600">
+                    <div className="py-2.5 px-2 text-[11px] text-slate-400 flex items-center justify-between">
+                      <span className="flex items-center gap-1.5 font-medium text-emerald-400">
                         <ShieldCheck className="w-3.5 h-3.5" />
                         Google Authenticated
                       </span>
                       <span className="text-[10px] uppercase font-bold text-slate-400">
                         SSO Active
                       </span>
-                    <div className="pt-1 pb-1 border-t border-slate-100">
+                    </div>
+
+                    <div className="pt-1 pb-1 border-t border-slate-800">
                       <Link
                         href="/account"
                         onClick={() => setShowProfileDropdown(false)}
-                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-100 text-[13px] font-semibold transition-colors"
+                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white text-[13px] font-semibold transition-colors"
                       >
-                        <UserCircle className="w-4 h-4 text-indigo-600" />
+                        <UserCircle className="w-4 h-4 text-indigo-400" />
                         <span>Account Dashboard</span>
                       </Link>
                     </div>
 
                     {onSignOut && (
-                      <div className="pt-1 border-t border-slate-100">
+                      <div className="pt-1 border-t border-slate-800">
                         <button
                           type="button"
                           id="navbar-dropdown-signout-btn"
@@ -340,11 +265,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                               setIsSigningOut(false);
                             }
                           }}
-                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-rose-600 hover:bg-rose-50 text-[13px] font-semibold transition-colors cursor-pointer disabled:opacity-60"
+                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-rose-400 hover:bg-rose-950/40 text-[13px] font-semibold transition-colors cursor-pointer disabled:opacity-60"
                         >
                           {isSigningOut ? (
                             <>
-                              <Loader2 className="w-4 h-4 animate-spin text-rose-500" />
+                              <Loader2 className="w-4 h-4 animate-spin text-rose-400" />
                               <span>Signing out...</span>
                             </>
                           ) : (
